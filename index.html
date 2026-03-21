@@ -7,10 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { 
-            /* 修改 1: 網頁底色改為天藍色 */
-            background-color: #51A8DD; 
-            /* 修改 3: 優先使用思源黑體，若無則用系統預設黑體 */
-            font-family: 'Noto Sans TC', -apple-system, "Microsoft JhengHei", sans-serif; 
+            background-color: #51A8DD; /* 網頁底色天藍色 */
+            font-family: 'Noto Sans TC', -apple-system, "Microsoft JhengHei", sans-serif; /* 思源黑體 */
             padding: 20px; 
             margin: 0;
             display: flex; 
@@ -18,20 +16,25 @@
             position: relative; /* 為 logo 定位 */
         }
 
-        /* 修改 4: 左上角 LOGO 樣式 */
+        /* ✅ 修改 2: 放大 LOGO */
         .logo {
             position: absolute;
             top: 10px;
             left: 10px;
-            max-width: 60px; /* 控制 logo 大小 */
+            max-width: 100px; /* 從 60px 放大為 100px */
             height: auto;
             z-index: 10;
         }
 
-        /* 修改 5: 最上面大圖樣式 */
-        .top-banner {
+        /* ✅ 修改 1: 縮小貓咪圖片 */
+        .top-banner-container {
             width: 100%;
-            max-width: 480px; /* 與 card 同寬 */
+            max-width: 480px;
+            display: flex;
+            justify-content: center; /* 貓咪居中 */
+        }
+        .top-banner {
+            width: 60%; /* 從 100% 縮小為 60% */
             height: auto;
             border-radius: 15px 15px 0 0; /* 只有上面圓角 */
             margin-bottom: -10px; /* 讓圖片與卡片無縫連接 */
@@ -56,8 +59,7 @@
         }
 
         h2 { 
-            /* 修改 2: 文字標題顏色改為黑色 */
-            color: black; 
+            color: black; /* 文字標題顏色黑色 */
             text-align: center; 
             margin-top: 0;
             margin-bottom: 20px; 
@@ -68,22 +70,19 @@
         .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 15px; line-height: 1.5; }
         .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
         
-        /* 修改 2: 一般文字顏色改為黑色 */
-        label { font-weight: bold; color: black; display: block; margin-top: 10px; }
+        label { font-weight: bold; color: black; /* 一般文字顏色黑色 */ display: block; margin-top: 10px; }
         
-        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; color: black; /* 修改 2: 輸入文字顏色黑色 */ }
-        
-        /* 選擇框與輸入框的樣式微調 */
-        select { color: black; /* 修改 2 */ font-size: 16px; }
-        option { color: black; /* 修改 2 */ font-size: 16px; }
+        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; color: black; /* 輸入文字顏色黑色 */ }
+        select { color: black; font-size: 16px; }
+        option { color: black; font-size: 16px; }
         
         .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; }
         .q-num { width: 60px; font-weight: bold; color: #1a73e8; font-size: 14px; }
         .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; height: 38px; }
-        .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; color: black; /* 修改 2 */ }
+        .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; color: black; }
         .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 2px; }
         button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; font-family: inherit; }
-        .footer { text-align: center; color: #333; /* 修改 2 */ font-size: 12px; margin-top: 20px; }
+        .footer { text-align: center; color: #333; /* 暗灰色黑色 */ font-size: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -91,10 +90,12 @@
 <img src="logo.png" alt="LOGO" class="logo">
 
 <div class="container">
-    <img src="cat.png" alt="貓咪大圖" class="top-banner">
+    <div class="top-banner-container">
+        <img src="cat.png" alt="貓咪大圖" class="top-banner">
+    </div>
 
     <div class="card">
-        <h2>科目對答系統</h2>
+        <h2>我要對答案</h2>
         
         <label>選擇科目：</label>
         <select id="sub" onchange="initChapters()">
@@ -124,6 +125,7 @@
 </div>
 
 <script>
+// --- 這裡完整保留你剛才傳給我的所有電子學與基電答案 ---
 let currentAnswers = []; // 用來存目前的標準答案順序
 
 const db = {
@@ -186,7 +188,7 @@ function buildQuiz() {
     let qCount = 0;
     const content = db[s][c];
 
-    // ✅ 強化判斷邏輯：確保答案即使格式不同也能正確塞入 currentAnswers
+    // 強化判斷邏輯：確保答案即使格式不同也能正確塞入 currentAnswers
     if (Array.isArray(content)) {
         if (typeof content[0] === 'string') {
             content.forEach((ans) => addQuestionRow(ans));
