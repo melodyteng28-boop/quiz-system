@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專業科目自動對獎系統</title>
+    <style>
+        body { font-family: -apple-system, "Microsoft JhengHei", sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; max-width: 450px; }
+        h2 { color: #1a73e8; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+        label { font-weight: bold; color: #555; display: block; margin-top: 10px; }
+        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .q-row { display: flex; align-items: center; margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .q-num { width: 60px; font-weight: bold; color: #1a73e8; }
+        .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; }
+        .feedback { width: 80px; font-weight: bold; text-align: right; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; transition: 0.3s; }
+        button:hover { background: #1557b0; }
+        .footer { text-align: center; color: #888; font-size: 12px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>科目對答系統</h2>
+    
+    <label>選擇科目：</label>
+    <select id="sub" onchange="initChapters()">
+        <option value="">-- 請選擇科目 --</option>
+        <option value="electronics">📘 電子學</option>
+        <option value="electric">📙 基本電學</option>
+    </select>
+
+    <label>選擇章節：</label>
+    <select id="chap" onchange="buildQuiz()">
+        <option value="">-- 請先選科目 --</option>
+    </select>
+
+    <div id="quiz-box"></div>
+    <button id="check-btn" style="display:none;" onclick="checkAll()">即時核對答案</button>
+    <div class="footer">填寫答案後點擊按鈕，僅針對已填寫題號核對</div>
+</div>
+
+<script>
+// --- 在這裡更新你的題庫答案 ---
+// 格式： "章節名稱": ["第1題答案", "第2題答案", ...]
+const db = {
+    "electronics": {
+        "第一章：二極體電路": ["A", "B", "C", "D"],
+        "第二章：BJT 特性": ["A", "0.2", "B", "C"]
+    },
+    "electric": {
+        "第一章：基本定律": ["10", "A", "20", "5"],
+        "第二章：電磁感應": ["B", "B", "D", "A"]
+    }
+};
+
+function initChapters() {
+    const s = document.getElementById('sub').value;
+    const c = document.getElementById('chap');
+    c.innerHTML = '<option value="">-- 選擇章節 --</option>';
+    if(s) {
+        Object.keys(db[s]).forEach(name => {
+            let opt = document.createElement('option');
+            opt.value = name; opt.innerText = name;
+            c.appendChild(opt);
+        });
+    }
+    document.getElementById('quiz-box').innerHTML = "";
+    document.getElementById('check-btn').style.display = "none";
+}
+
+function buildQuiz() {
+    const s = document.getElementById('sub').value;
+    const c = document.getElementById('chap').value;
+    const box = document.getElementById('quiz-box');
+    const btn = document.getElementById('check-btn');
+    box.innerHTML = "";
+    if(!c) { btn.style.display = "none"; return; }
+    btn.style.display = "block";
+    
+    db[s][c].forEach((_, i) => {
+        box.innerHTML += `
+            <div class="q-row">
+                <span class="q-num">第 ${i+1} 題</span>
+                <input type="text" class="q-input" placeholder="答案">
+                <span class="feedback" id="f-${i}"></span>
+            </div>`;
+    });
+}
+
+function checkAll() {
+    const s = document.getElementById('sub').value;
+    const c = document.getElementById('chap').value;
+    const inputs = document.querySelectorAll('.q-input');
+    const ans = db[s][c];
+
+    inputs.forEach((input, i) => {
+        const userVal = input.value.trim().toUpperCase();
+        const f = document.getElementById(`f-${i}`);
+        if(userVal === "") {
+            f.innerText = "";
+        } else if(userVal === ans[i].toUpperCase()) {
+            f.innerHTML = "<span style='color:green'>✅ 正確</span>";
+        } else {
+            f.innerHTML = "<span style='color:red'>❌ 錯誤</span>";
+        }
+    });
+}
+</script>
+
+</body>
+</html>
