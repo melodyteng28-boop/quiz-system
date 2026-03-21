@@ -4,55 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>專業科目自動對獎系統</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, "Microsoft JhengHei", sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; max-width: 480px; }
-        h2 { color: #1a73e8; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+        body { 
+            /* 修改 1: 網頁底色改為天藍色 */
+            background-color: #51A8DD; 
+            /* 修改 3: 優先使用思源黑體，若無則用系統預設黑體 */
+            font-family: 'Noto Sans TC', -apple-system, "Microsoft JhengHei", sans-serif; 
+            padding: 20px; 
+            margin: 0;
+            display: flex; 
+            justify-content: center; 
+            position: relative; /* 為 logo 定位 */
+        }
+
+        /* 修改 4: 左上角 LOGO 樣式 */
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            max-width: 60px; /* 控制 logo 大小 */
+            height: auto;
+            z-index: 10;
+        }
+
+        /* 修改 5: 最上面大圖樣式 */
+        .top-banner {
+            width: 100%;
+            max-width: 480px; /* 與 card 同寬 */
+            height: auto;
+            border-radius: 15px 15px 0 0; /* 只有上面圓角 */
+            margin-bottom: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px; 
+            margin-top: 60px; /* 為 logo 留白 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 0 0 15px 15px; /* 下面圓角 */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            width: 100%;
+            box-sizing: border-box; /* 確保 padding 不會撐大卡片 */
+        }
+
+        h2 { 
+            /* 修改 2: 文字標題顏色改為黑色 */
+            color: black; 
+            text-align: center; 
+            margin-top: 0;
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #ddd; 
+            padding-bottom: 10px; 
+        }
+
         .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 15px; line-height: 1.5; }
         .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
-        label { font-weight: bold; color: #555; display: block; margin-top: 10px; }
-        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        
+        /* 修改 2: 一般文字顏色改為黑色 */
+        label { font-weight: bold; color: black; display: block; margin-top: 10px; }
+        
+        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; color: black; /* 修改 2: 輸入文字顏色黑色 */ }
+        
         .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; }
         .q-num { width: 60px; font-weight: bold; color: #1a73e8; font-size: 14px; }
         .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; height: 38px; }
-        .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; }
+        .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; color: black; /* 修改 2 */ }
         .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 2px; }
-        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; }
-        .footer { text-align: center; color: #888; font-size: 12px; margin-top: 20px; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; font-family: inherit; }
+        .footer { text-align: center; color: #333; /* 修改 2: 暗灰色黑色 */ font-size: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>科目對答系統</h2>
-    
-    <label>選擇科目：</label>
-    <select id="sub" onchange="initChapters()">
-        <option value="">-- 請選擇科目 --</option>
-        <option value="electronics">⚡電子學</option>
-        <option value="electric">🔋基本電學</option>
-    </select>
+<img src="logo.png" alt="LOGO" class="logo">
 
-    <label>選擇章節：</label>
-    <select id="chap" onchange="buildQuiz()">
-        <option value="">-- 選擇章節 --</option>
-    </select>
+<div class="container">
+    <img src="cat.png" alt="貓咪大圖" class="top-banner">
 
-    <div id="quiz-area" style="display:none;">
-        <div class="info-box">
-            💡 <strong>填寫說明：</strong><br>
-            1. 計算題不需要填寫單位。<br>
-            2. 根號請使用 <strong>sqrt(N)</strong>，例如 √2 寫作 sqrt(2)。<br>
-            3. 平方或次方請使用 <strong>^</strong>，例如 10³ 寫作 10^3。
+    <div class="card">
+        <h2>科目對答系統</h2>
+        
+        <label>選擇科目：</label>
+        <select id="sub" onchange="initChapters()">
+            <option value="">-- 請選擇科目 --</option>
+            <option value="electronics">⚡電子學</option>
+            <option value="electric">🔋基本電學</option>
+        </select>
+
+        <label>選擇章節：</label>
+        <select id="chap" onchange="buildQuiz()">
+            <option value="">-- 選擇章節 --</option>
+        </select>
+
+        <div id="quiz-area" style="display:none;">
+            <div class="info-box">
+                💡 <strong>填寫說明：</strong><br>
+                1. 計算題不需要填寫單位。<br>
+                2. 根號請使用 <strong>sqrt(N)</strong>，例如 √2 寫作 sqrt(2)。<br>
+                3. 平方或次方請使用 <strong>^</strong>，例如 10³ 寫作 10^3。
+            </div>
+            <div id="quiz-box"></div>
+            <button id="check-btn" onclick="checkAll()">即時核對答案</button>
         </div>
-        <div id="quiz-box"></div>
-        <button id="check-btn" onclick="checkAll()">即時核對答案</button>
-    </div>
 
-    <div class="footer">填寫完畢後點擊按鈕，僅針對已填寫格核對</div>
+        <div class="footer">填寫完畢後點擊按鈕，僅針對已填寫格核對</div>
+    </div>
 </div>
 
 <script>
+// --- 這裡完整保留你剛才傳給我的所有電子學與基電答案 ---
 let currentAnswers = []; 
 
 const db = {
@@ -80,4 +148,92 @@ const db = {
            { section: "(3) 迴路", answers: ["B", "D", "C"] },
            { section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },
            { section: "(5) 電源轉換", answers: ["1A；2A", "4/9", "42", "A", "B", "B"] },
-           { section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "
+           { section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }
+        ],
+        "第五章：電容及靜電": ["270N向左","C","D","D","B","B","1.8×10^10","9×10^9","C","1","4","50000","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
+        "第六章：電感及電磁": ["C","B","D","B","D","C","D","B","B","B","A","B","B","B","B","D","B","B","B","A","A","D","D","C","B","D","C","A","D","A","C","A","D","C","C","A","C","C","B","A","C","D","B","C","D","B","B","A","D","C","B","A","D"],
+        "第七章：直流暫態": ["C","B","D","A","B","A","A","A","D","A","C","D","C","D","D","A","D","B","C","A","D","D","B","C","B","A","A","A","C","D","A"]
+    }
+};
+
+function initChapters() {
+    const s = document.getElementById('sub').value;
+    const c = document.getElementById('chap');
+    c.innerHTML = '<option value="">-- 選擇章節 --</option>';
+    if(s && db[s]) {
+        Object.keys(db[s]).forEach(name => {
+            let opt = document.createElement('option');
+            opt.value = name; opt.innerText = name;
+            c.appendChild(opt);
+        });
+    }
+    document.getElementById('quiz-area').style.display = "none";
+}
+
+function buildQuiz() {
+    const s = document.getElementById('sub').value;
+    const c = document.getElementById('chap').value;
+    const box = document.getElementById('quiz-box');
+    const area = document.getElementById('quiz-area');
+    box.innerHTML = "";
+    currentAnswers = []; 
+    if(!c) { area.style.display = "none"; return; }
+    area.style.display = "block";
+    
+    let qCount = 0;
+    const content = db[s][c];
+
+    if (Array.isArray(content) && typeof content[0] === 'string') {
+        content.forEach((ans) => addQuestionRow(ans));
+    } else {
+        content.forEach((group) => {
+            if(group.section) box.innerHTML += `<div class="section-title">${group.section}</div>`;
+            group.answers.forEach((ans) => addQuestionRow(ans));
+        });
+    }
+
+    function addQuestionRow(ans) {
+        currentAnswers.push(ans);
+        box.innerHTML += `
+            <div class="q-row">
+                <span class="q-num">第 ${qCount + 1} 題</span>
+                <input type="text" class="q-input" placeholder="請輸入答案">
+                <span class="feedback" id="f-${qCount}"></span>
+            </div>`;
+        qCount++;
+    }
+}
+
+function checkAll() {
+    const inputs = document.querySelectorAll('.q-input');
+    inputs.forEach((input, i) => {
+        let userVal = input.value.trim().toLowerCase().replace(/\s+/g, ""); 
+        let rawCorrect = currentAnswers[i];
+        if (!rawCorrect) return; // 除錯用：確保答案存在
+        let correctVal = rawCorrect.trim().toLowerCase().replace(/\s+/g, "");
+        const f = document.getElementById(`f-${i}`);
+        if (userVal === "") { f.innerText = ""; return; }
+
+        try {
+            let uExp = userVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
+            let cExp = correctVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
+            let uNum = eval(uExp), cNum = eval(cExp);
+            if (Math.abs(uNum - cNum) < Math.abs(cNum * 0.01) || Math.abs(uNum - cNum) < 0.001) {
+                f.innerHTML = "<span style='color:green'>✅ 正確</span>";
+            } else { throw "err"; }
+        } catch (e) {
+            if (userVal.toUpperCase() === correctVal.toUpperCase()) {
+                f.innerHTML = "<span style='color:green'>✅ 正確</span>";
+            } else {
+                let showAns = "";
+                if (!["A", "B", "C", "D"].includes(rawCorrect.toUpperCase())) {
+                    showAns = `<br><span class="correct-ans">正確答案：${rawCorrect}</span>`;
+                }
+                f.innerHTML = `<span style='color:red'>❌ 錯誤</span>${showAns}`;
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>
