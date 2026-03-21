@@ -6,16 +6,18 @@
     <title>專業科目自動對獎系統</title>
     <style>
         body { font-family: -apple-system, "Microsoft JhengHei", sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; max-width: 450px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; max-width: 480px; }
         h2 { color: #1a73e8; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+        .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 15px; line-height: 1.5; }
+        .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
         label { font-weight: bold; color: #555; display: block; margin-top: 10px; }
         select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        .q-row { display: flex; align-items: center; margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-        .q-num { width: 60px; font-weight: bold; color: #1a73e8; }
-        .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; }
-        .feedback { width: 80px; font-weight: bold; text-align: right; }
-        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #1557b0; }
+        .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; }
+        .q-num { width: 60px; font-weight: bold; color: #1a73e8; font-size: 14px; }
+        .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; height: 38px; }
+        .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; }
+        .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 2px; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; }
         .footer { text-align: center; color: #888; font-size: 12px; margin-top: 20px; }
     </style>
 </head>
@@ -33,47 +35,56 @@
 
     <label>選擇章節：</label>
     <select id="chap" onchange="buildQuiz()">
-        <option value="">-- 請先選科目 --</option>
+        <option value="">-- 選擇章節 --</option>
     </select>
 
-    <div id="quiz-box"></div>
-    <button id="check-btn" style="display:none;" onclick="checkAll()">即時核對答案</button>
-    <div class="footer">填寫答案後點擊按鈕，僅針對已填寫題號核對</div>
+    <div id="quiz-area" style="display:none;">
+        <div class="info-box">
+            💡 <strong>填寫說明：</strong><br>
+            1. 計算題不需要填寫單位。<br>
+            2. 根號請使用 <strong>sqrt(N)</strong>，例如 √2 寫作 sqrt(2)。<br>
+            3. 平方或次方請使用 <strong>^</strong>，例如 10³ 寫作 10^3。
+        </div>
+        <div id="quiz-box"></div>
+        <button id="check-btn" onclick="checkAll()">即時核對答案</button>
+    </div>
+
+    <div class="footer">填寫完畢後點擊按鈕，僅針對已填寫格核對</div>
 </div>
 
 <script>
-// --- 在這裡更新你的題庫答案 ---
-// 格式： "章節名稱": ["第1題答案", "第2題答案", ...]
+let currentAnswers = []; 
+
 const db = {
     "electronics": {
         "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845V；2.025V(大約)", "A", "D", "C", "B", "D", "C", "B"],
-        "第二章：二極體及應用電路(上)": ["3.125×10^8", "D", "D", "C", "A", "C", "3.52V；-1.156mA", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7V", "D", "D"],
-        "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)mA", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
+        "第二章：二極體及應用電路(上)": ["3.125×10^8", "D", "D", "C", "A", "C", "3.52V；-1.156mA", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7V", "D", "D"],
+        "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)mA", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
         "第三章：雙極性接面電晶體(上)": ["D", "A", "B", "C", "B", "B", "B", "A", "D", "A", "A", "A", "C", "C"],
-        "第三章：雙極性接面電晶體(下)": ["D", "C", "A", "D", "B", "B", "C", "B", "B", "D", "C", "B", "A", "A", "B", "C", "A", "B", "D", "D", "B", "B", "A", "B", "D", "A", "B", "C", "A"]   
+        "第三章：雙極性接面電晶體(下)": ["D", "C", "A", "D", "B", "B", "C", "B", "B", "D", "C", "B", "A", "A", "B", "C", "A", "B", "D", "D", "B", "B", "A", "B", "D", "A", "B", "C", "A"]
+    },
     "electric": {
         "第一、二章：電學基本概念、電阻": ["B", "B", "B", "C", "D", "C", "A", "A", "D", "A", "B", "D", "C", "C", "D", "A", "C", "B", "B", "C", "D", "D", "A", "C", "B", "C", "C"],
         "第三章：串並聯電路": [
            { section: "(1) 手指短路", answers: ["3A", "4A", "B", "C", "B", "C", "B"] },
-           { section: "(2)串I同；並V同", answers: ["20mW", "24歐姆", "3840W", "45V", "C", "D"] },
-           { section: "(3)惠斯登", answers: ["10V", "4A；2V；-1/3A, "3A", "A", "A", "B"] } ,
-           { section: "(4)壓升壓降", answers: [ "C", "B", "C", "C"] } , 
-           { section: "(5)無限電阻", answers: [ "(1+sqrt(3))R", "B"] } ,
-           { section: "(6)練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] } ],
+           { section: "(2) 串I同；並V同", answers: ["20mW", "24", "3840", "45", "C", "D"] },
+           { section: "(3) 惠斯登", answers: ["10V", "4A；2V；-1/3A", "3", "A", "A", "B"] },
+           { section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },
+           { section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },
+           { section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }
+        ],
         "第四章：直流網路分析": [
-           { section: "(補充)", answers: ["-1V", "8V"] },
-           { section: "(1)重疊", answers: ["D", "A", "6V", "A", "C", "B"] },
-           { section: "(2)節點", answers: ["C", "D", "B", "-3/7mA", "D", "C"] },
-           { section: "(3)迴路", answers: ["B", "D", "C"] },
-           { section: "(4)戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },
-           { section: "(5)電源轉換", answers: ["1A；2A", "4/9mA", "42V", "A", "B", "B"] },
-           { section: "綜合練習", answers: ["-12V", "-27mA", "41/3mA", "8/3V", "-9.6mW", "8/3mW", "9A", "42.5V", "50V", "1/3mA", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] },
-            ]
-        "第五章：電容及靜電": ["270N 向左","C","D","D","B","B","1.8×10^10","9×10^9","C","1","4","50000V/m","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
+           { section: "(補充)", answers: ["-1", "8"] },
+           { section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },
+           { section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },
+           { section: "(3) 迴路", answers: ["B", "D", "C"] },
+           { section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },
+           { section: "(5) 電源轉換", answers: ["1A；2A", "4/9", "42", "A", "B", "B"] },
+           { section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }
+        ],
+        "第五章：電容及靜電": ["270N向左","C","D","D","B","B","1.8×10^10","9×10^9","C","1","4","50000","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
         "第六章：電感及電磁": ["C","B","D","B","D","C","D","B","B","B","A","B","B","B","B","D","B","B","B","A","A","D","D","C","B","D","C","A","D","A","C","A","D","C","C","A","C","C","B","A","C","D","B","C","D","B","B","A","D","C","B","A","D"],
-        "第七章：直流暫態": ["C","B","D","A","B","A","A","A","D","A","C","D","C","D","D","A","D","B","C","A","D","D","B","C","B","A","A","A","C","D","A"]
-        ]
-    }
+        "第七章：直流暫態": ["C","B","D","A","B","A","A","A","D","A","C","D","C","D","D","A","D","B","C","A","D","D","B","C","B","A","A","A","C","D","A"]
     }
 };
 
@@ -81,52 +92,44 @@ function initChapters() {
     const s = document.getElementById('sub').value;
     const c = document.getElementById('chap');
     c.innerHTML = '<option value="">-- 選擇章節 --</option>';
-    if(s) {
+    if(s && db[s]) {
         Object.keys(db[s]).forEach(name => {
             let opt = document.createElement('option');
             opt.value = name; opt.innerText = name;
             c.appendChild(opt);
         });
     }
-    document.getElementById('quiz-box').innerHTML = "";
-    document.getElementById('check-btn').style.display = "none";
+    document.getElementById('quiz-area').style.display = "none";
 }
 
 function buildQuiz() {
     const s = document.getElementById('sub').value;
     const c = document.getElementById('chap').value;
     const box = document.getElementById('quiz-box');
-    const btn = document.getElementById('check-btn');
+    const area = document.getElementById('quiz-area');
     box.innerHTML = "";
     currentAnswers = []; 
-    if(!c) { btn.style.display = "none"; return; }
-    btn.style.display = "block";
+    if(!c) { area.style.display = "none"; return; }
+    area.style.display = "block";
     
     let qCount = 0;
     const content = db[s][c];
 
-    // 判斷：如果內容的第一個元素是字串，代表沒有要分 section
-    if (typeof content[0] === 'string') {
-        content.forEach((ans) => {
-            addQuestionRow(ans);
-        });
+    if (Array.isArray(content) && typeof content[0] === 'string') {
+        content.forEach((ans) => addQuestionRow(ans));
     } else {
-        // 如果是物件，就走原本的分區邏輯
         content.forEach((group) => {
             if(group.section) box.innerHTML += `<div class="section-title">${group.section}</div>`;
-            group.answers.forEach((ans) => {
-                addQuestionRow(ans);
-            });
+            group.answers.forEach((ans) => addQuestionRow(ans));
         });
     }
 
-    // 抽出重複的畫圖邏輯
     function addQuestionRow(ans) {
         currentAnswers.push(ans);
         box.innerHTML += `
             <div class="q-row">
                 <span class="q-num">第 ${qCount + 1} 題</span>
-                <input type="text" class="q-input" placeholder="答案">
+                <input type="text" class="q-input" placeholder="請輸入答案">
                 <span class="feedback" id="f-${qCount}"></span>
             </div>`;
         qCount++;
@@ -134,24 +137,35 @@ function buildQuiz() {
 }
 
 function checkAll() {
-    const s = document.getElementById('sub').value;
-    const c = document.getElementById('chap').value;
     const inputs = document.querySelectorAll('.q-input');
-    const ans = db[s][c];
-
     inputs.forEach((input, i) => {
-        const userVal = input.value.trim().toUpperCase();
+        let userVal = input.value.trim().toLowerCase().replace(/\s+/g, ""); 
+        let rawCorrect = currentAnswers[i];
+        let correctVal = rawCorrect.trim().toLowerCase().replace(/\s+/g, "");
         const f = document.getElementById(`f-${i}`);
-        if(userVal === "") {
-            f.innerText = "";
-        } else if(userVal === ans[i].toUpperCase()) {
-            f.innerHTML = "<span style='color:green'>✅ 正確</span>";
-        } else {
-            f.innerHTML = "<span style='color:red'>❌ 錯誤</span>";
+        if (userVal === "") { f.innerText = ""; return; }
+
+        try {
+            let uExp = userVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
+            let cExp = correctVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
+            let uNum = eval(uExp), cNum = eval(cExp);
+            if (Math.abs(uNum - cNum) < Math.abs(cNum * 0.01) || Math.abs(uNum - cNum) < 0.001) {
+                f.innerHTML = "<span style='color:green'>✅ 正確</span>";
+            } else { throw "err"; }
+        } catch (e) {
+            if (userVal.toUpperCase() === correctVal.toUpperCase()) {
+                f.innerHTML = "<span style='color:green'>✅ 正確</span>";
+            } else {
+                let showAns = "";
+                // 判斷是否為 ABCD 選擇題，若不是則顯示正確答案
+                if (!["A", "B", "C", "D"].includes(rawCorrect.toUpperCase())) {
+                    showAns = `<br><span class="correct-ans">正確答案：${rawCorrect}</span>`;
+                }
+                f.innerHTML = `<span style='color:red'>❌ 錯誤</span>${showAns}`;
+            }
         }
     });
 }
 </script>
-
 </body>
 </html>
