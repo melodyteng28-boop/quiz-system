@@ -16,23 +16,23 @@
             position: relative; 
         }
 
-        /* 放大 LOGO */
+        /* ✅ 修改 2: LOGO 大小改為 150% (約 150px) */
         .logo {
             position: absolute;
             top: 10px;
             left: 10px;
-            max-width: 100px; 
+            width: 150px; 
             height: auto;
             z-index: 10;
         }
 
-        /* 縮小貓咪圖片 */
         .top-banner-container {
             width: 100%;
             max-width: 480px;
             display: flex;
             justify-content: center; 
         }
+        /* 貓咪圖片保持 60% 寬度 */
         .top-banner {
             width: 60%; 
             height: auto;
@@ -43,7 +43,7 @@
         .container {
             width: 100%;
             max-width: 480px; 
-            margin-top: 60px; 
+            margin-top: 100px; /* 因為 LOGO 變大，上方留白多一點避免重疊 */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -87,13 +87,13 @@
 
 <img src="logo.png" alt="LOGO" class="logo">
 
-<div class="container">
+<div class="container" id="main-container">
     <div class="top-banner-container">
         <img src="cat.png" alt="貓咪大圖" class="top-banner">
     </div>
 
     <div class="card">
-        <h2 id="quiz-title">我要對答案</h2>
+        <h2>我要對答案</h2>
         
         <label>選擇科目：</label>
         <select id="sub" onchange="initChapters()">
@@ -108,7 +108,7 @@
         </select>
 
         <div id="quiz-area" style="display:none;">
-            <div class="info-box" id="info-scroll-target">
+            <div class="info-box">
                 💡 <strong>填寫說明：</strong><br>
                 1. 計算題不需要填寫單位。<br>
                 2. 根號請使用 <strong>sqrt(N)</strong>，例如 √2 寫作 sqrt(2)。<br>
@@ -123,6 +123,7 @@
 </div>
 
 <script>
+// --- 保留完整資料庫 ---
 let currentAnswers = []; 
 
 const db = {
@@ -239,8 +240,10 @@ function checkAll() {
         }
     });
 
-    // ✅ 新增功能：按下按鈕後自動捲動到題目區塊最上方
-    document.getElementById('info-scroll-target').scrollIntoView({ behavior: 'smooth' });
+    // ✅ 修改 1: 更強制的捲動方式
+    // 取得測驗卡片的座標並強制跳轉過去
+    const target = document.getElementById('main-container').offsetTop;
+    window.scrollTo({ top: target, behavior: 'smooth' });
 }
 </script>
 </body>
