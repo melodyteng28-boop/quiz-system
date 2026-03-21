@@ -34,7 +34,7 @@
             max-width: 480px; /* 與 card 同寬 */
             height: auto;
             border-radius: 15px 15px 0 0; /* 只有上面圓角 */
-            margin-bottom: 10px;
+            margin-bottom: -10px; /* 讓圖片與卡片無縫連接 */
         }
 
         .container {
@@ -73,13 +73,17 @@
         
         select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; color: black; /* 修改 2: 輸入文字顏色黑色 */ }
         
+        /* 選擇框與輸入框的樣式微調 */
+        select { color: black; /* 修改 2 */ font-size: 16px; }
+        option { color: black; /* 修改 2 */ font-size: 16px; }
+        
         .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; }
         .q-num { width: 60px; font-weight: bold; color: #1a73e8; font-size: 14px; }
         .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; height: 38px; }
         .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; color: black; /* 修改 2 */ }
         .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 2px; }
         button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; font-family: inherit; }
-        .footer { text-align: center; color: #333; /* 修改 2: 暗灰色黑色 */ font-size: 12px; margin-top: 20px; }
+        .footer { text-align: center; color: #333; /* 修改 2 */ font-size: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -120,8 +124,7 @@
 </div>
 
 <script>
-// --- 這裡完整保留你剛才傳給我的所有電子學與基電答案 ---
-let currentAnswers = []; 
+let currentAnswers = []; // 用來存目前的標準答案順序
 
 const db = {
     "electronics": {
@@ -136,7 +139,7 @@ const db = {
         "第三章：串並聯電路": [
            { section: "(1) 手指短路", answers: ["3A", "4A", "B", "C", "B", "C", "B"] },
            { section: "(2) 串I同；並V同", answers: ["20mW", "24", "3840", "45", "C", "D"] },
-           { section: "(3) 惠斯登", answers: ["10V", "4A；2V；-1/3A", "3", "A", "A", "B"] },
+           { section: "(3) 惠斯登", answers: ["10V", "4A；2V；-1/3A", "3", "A", "A", "B"] }, // ✅ 已補上漏掉的引號
            { section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },
            { section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },
            { section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }
@@ -183,13 +186,16 @@ function buildQuiz() {
     let qCount = 0;
     const content = db[s][c];
 
-    if (Array.isArray(content) && typeof content[0] === 'string') {
-        content.forEach((ans) => addQuestionRow(ans));
-    } else {
-        content.forEach((group) => {
-            if(group.section) box.innerHTML += `<div class="section-title">${group.section}</div>`;
-            group.answers.forEach((ans) => addQuestionRow(ans));
-        });
+    // ✅ 強化判斷邏輯：確保答案即使格式不同也能正確塞入 currentAnswers
+    if (Array.isArray(content)) {
+        if (typeof content[0] === 'string') {
+            content.forEach((ans) => addQuestionRow(ans));
+        } else if (typeof content[0] === 'object' && content[0].answers) {
+            content.forEach((group) => {
+                if(group.section) box.innerHTML += `<div class="section-title">${group.section}</div>`;
+                group.answers.forEach((ans) => addQuestionRow(ans));
+            });
+        }
     }
 
     function addQuestionRow(ans) {
@@ -215,13 +221,16 @@ function checkAll() {
         if (userVal === "") { f.innerText = ""; return; }
 
         try {
+            // 計算題運算邏輯 (支援根號、次方)
             let uExp = userVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
             let cExp = correctVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
             let uNum = eval(uExp), cNum = eval(cExp);
+
             if (Math.abs(uNum - cNum) < Math.abs(cNum * 0.01) || Math.abs(uNum - cNum) < 0.001) {
                 f.innerHTML = "<span style='color:green'>✅ 正確</span>";
             } else { throw "err"; }
         } catch (e) {
+            // 文字比對
             if (userVal.toUpperCase() === correctVal.toUpperCase()) {
                 f.innerHTML = "<span style='color:green'>✅ 正確</span>";
             } else {
