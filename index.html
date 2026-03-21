@@ -6,91 +6,90 @@
     <title>專業科目自動對獎系統</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-    body { 
-        background-color: #51A8DD; /* 網頁底色 */
-        font-family: 'Noto Sans TC', -apple-system, "Microsoft JhengHei", sans-serif; /* 思源黑體 */
-        padding: 20px; 
-        margin: 0;
-        display: flex; 
-        justify-content: center; 
-        position: relative; 
-    }
+        body { 
+            background-color: #51A8DD; 
+            font-family: 'Noto Sans TC', -apple-system, "Microsoft JhengHei", sans-serif; 
+            padding: 20px; 
+            margin: 0;
+            display: flex; 
+            justify-content: center; 
+            position: relative; 
+        }
 
-    /* 新數據：LOGO 縮小並調整位置 (避免擋住對話框) */
-    .logo {
-        position: absolute;
-        top: 20px;    /* 下移 */
-        left: 20px;   /* 右移 */
-        width: 100px;  /* 縮小為 100px */
-        height: auto;
-        z-index: 10;
-    }
+        /* LOGO 數據：調整為 100px 並偏移避免擋住貓咪對話框 */
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 100px; 
+            height: auto;
+            z-index: 10;
+        }
 
-    .top-banner-container {
-        width: 100%;
-        max-width: 480px;
-        display: flex;
-        justify-content: center; /* 居中 */
-    }
-    /* 新數據：貓咪圖片縮小為 50% */
-    .top-banner {
-        width: 50%; /* 從 60% 縮小為 50% */
-        height: auto;
-        border-radius: 15px 15px 0 0; 
-        margin-bottom: 20px; /* 將 -10px 改為 20px，讓圖片與標題留白 */
-    }
+        .top-banner-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            justify-content: center; 
+        }
+        /* 貓咪圖片數據：縮小為 50% 確保對話框完整 */
+        .top-banner {
+            width: 50%; 
+            height: auto;
+            border-radius: 15px 15px 0 0; 
+            margin-bottom: 20px; 
+        }
 
-    .container {
-        width: 100%;
-        max-width: 480px; 
-        margin-top: 80px; /* LOGO和貓咪變小了，間距可以縮小一點點 */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        .container {
+            width: 100%;
+            max-width: 480px; 
+            margin-top: 80px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    /* 新數據：將卡片內的上方留白增加到 50px (與對話框留距離) */
-    .card { 
-        background: white; 
-        padding: 50px 25px 25px 25px; /* 上方增加留白 */
-        border-radius: 0 0 15px 15px; 
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-        width: 100%;
-        box-sizing: border-box; 
-    }
+        /* 卡片數據：上方留白增加到 50px */
+        .card { 
+            background: white; 
+            padding: 50px 25px 25px 25px; 
+            border-radius: 0 0 15px 15px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            width: 100%;
+            box-sizing: border-box; 
+        }
 
-    h2 { 
-        color: black; 
-        text-align: center; 
-        margin-top: 0;
-        margin-bottom: 20px; 
-        border-bottom: 2px solid #ddd; 
-        padding-bottom: 10px; 
-    }
+        h2 { 
+            color: black; 
+            text-align: center; 
+            margin-top: 0;
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #ddd; 
+            padding-bottom: 10px; 
+        }
 
-    .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 15px; line-height: 1.5; }
-    .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
-    
-    label { font-weight: bold; color: black; display: block; margin-top: 10px; }
-    
-    select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; color: black; }
-    select { color: black; font-size: 16px; }
-    option { color: black; font-size: 16px; }
-    
-    .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; }
-    .q-num { width: 60px; font-weight: bold; color: #1a73e8; font-size: 14px; }
-    .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; height: 38px; }
-    .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; color: black; }
-    .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 2px; }
-    button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; font-family: inherit; }
-    .footer { text-align: center; color: #333; /* 暗灰色黑色 */ font-size: 12px; margin-top: 20px; }
-</style>
+        .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 15px; line-height: 1.5; }
+        .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
+        
+        label { font-weight: bold; color: black; display: block; margin-top: 10px; }
+        
+        select, input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; color: black; }
+        
+        /* 每一題的容器，增加 ID 方便精確跳轉 */
+        .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #eee; scroll-margin-top: 20px; /* 捲動時上方留一點空隙 */ }
+        .q-num { width: 60px; font-weight: bold; color: #1a73e8; font-size: 14px; }
+        .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; height: 38px; }
+        .feedback { min-width: 85px; font-weight: bold; text-align: right; font-size: 13px; color: black; }
+        .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 2px; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; font-family: inherit; }
+        .footer { text-align: center; color: #333; font-size: 12px; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
 <img src="logo.png" alt="LOGO" class="logo">
 
-<div class="container" id="main-container">
+<div class="container">
     <div class="top-banner-container">
         <img src="cat.png" alt="貓咪大圖" class="top-banner">
     </div>
@@ -126,7 +125,6 @@
 </div>
 
 <script>
-// --- 保留完整資料庫 ---
 let currentAnswers = []; 
 
 const db = {
@@ -202,8 +200,9 @@ function buildQuiz() {
 
     function addQuestionRow(ans) {
         currentAnswers.push(ans);
+        // 為每一行加上 id 方便抓取
         box.innerHTML += `
-            <div class="q-row">
+            <div class="q-row" id="row-${qCount}">
                 <span class="q-num">第 ${qCount + 1} 題</span>
                 <input type="text" class="q-input" placeholder="請輸入答案">
                 <span class="feedback" id="f-${qCount}"></span>
@@ -214,8 +213,16 @@ function buildQuiz() {
 
 function checkAll() {
     const inputs = document.querySelectorAll('.q-input');
+    let firstFilledIndex = -1; // 用來記錄第一個填寫題目的索引
+
     inputs.forEach((input, i) => {
         let userVal = input.value.trim().toLowerCase().replace(/\s+/g, ""); 
+        
+        // 紀錄第一個填寫的題目
+        if (userVal !== "" && firstFilledIndex === -1) {
+            firstFilledIndex = i;
+        }
+
         let rawCorrect = currentAnswers[i];
         if (!rawCorrect) return;
         let correctVal = rawCorrect.trim().toLowerCase().replace(/\s+/g, "");
@@ -243,10 +250,13 @@ function checkAll() {
         }
     });
 
-    // ✅ 修改 1: 更強制的捲動方式
-    // 取得測驗卡片的座標並強制跳轉過去
-    const target = document.getElementById('main-container').offsetTop;
-    window.scrollTo({ top: target, behavior: 'smooth' });
+    // ✅ 修改：自動跳轉到「第一個填寫的題目」
+    if (firstFilledIndex !== -1) {
+        const targetRow = document.getElementById(`row-${firstFilledIndex}`);
+        if (targetRow) {
+            targetRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
 }
 </script>
 </body>
