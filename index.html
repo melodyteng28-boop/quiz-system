@@ -3,35 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專業科目自動對獎系統 - 進化版</title>
+    <title>專業科目自動對獎系統</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #51A8DD; font-family: 'Noto Sans TC', sans-serif; padding: 10px; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
-        .logo { position: absolute; top: 10px; left: 10px; width: 200px; z-index: 10; }
-        .container { width: 100%; max-width: 480px; margin-top: 50px; display: flex; flex-direction: column; align-items: center; }
-        .top-banner-container { width: 100%; display: flex; justify-content: center; line-height: 0; }
-        .top-banner { width: 75%; display: block; margin-bottom: -1px; }
-        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; box-sizing: border-box; position: relative; z-index: 5; }
-        h2 { color: black; text-align: center; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        body { 
+            background-color: #51A8DD; 
+            font-family: 'Noto Sans TC', sans-serif; 
+            padding: 10px; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh; 
+        }
+        .logo { position: absolute; top: 10px; left: 10px; width: 80px; z-index: 10; }
+        .container { width: 100%; max-width: 480px; margin-top: 40px; display: flex; flex-direction: column; align-items: center; }
+        .top-banner { width: 70%; display: block; margin-bottom: -1px; }
         
-        /* 語音按鈕樣式 */
-        .voice-btn { background: #34a853; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .voice-btn.recording { background: #ea4335; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        h2 { color: black; text-align: center; margin: 0 0 15px 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .q-row { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 10px; 
+            background: #fdfdfd; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #eee; 
+            gap: 10px; 
+        }
+        .q-num { width: 50px; font-weight: bold; color: #1a73e8; font-size: 14px; flex-shrink: 0; }
+        .q-input { 
+            flex: 1; 
+            min-width: 0; 
+            border: 1px solid #ccc; 
+            height: 40px; 
+            padding: 0 10px; 
+            border-radius: 5px; 
+            font-size: 18px; 
+            text-transform: uppercase; 
+            text-align: center; 
+        }
+        .q-input:focus { border-color: #1a73e8; background: #fff9db; outline: none; }
+        
+        .feedback { min-width: 75px; font-weight: bold; text-align: right; font-size: 13px; flex-shrink: 0; }
+        .correct-ans { color: #d93025; font-size: 12px; display: block; margin-top: 2px; }
 
-        .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 10px; border-radius: 8px; font-size: 13px; color: #856404; margin-bottom: 15px; }
-        .section-title { color: #d93025; background: #fff1f0; padding: 6px 10px; border-left: 5px solid #d93025; margin: 20px 0 10px 0; font-size: 14px; font-weight: bold; }
-        
-        .q-row { display: flex; flex-wrap: nowrap; align-items: center; margin-bottom: 8px; background: #fdfdfd; padding: 8px 5px; border-radius: 8px; border: 1px solid #eee; }
-        .q-num { width: 45px; font-weight: bold; color: #1a73e8; font-size: 12px; flex-shrink: 0; }
-        .q-input { flex: 1; min-width: 0; border: 1px solid #ccc; height: 35px; padding: 0 8px; border-radius: 5px; font-size: 16px; margin: 0 5px; text-transform: uppercase; }
-        .q-input:focus { border-color: #1a73e8; outline: none; background: #e8f0fe; }
-        .feedback { min-width: 75px; font-weight: bold; text-align: right; font-size: 12px; flex-shrink: 0; white-space: nowrap; }
-        .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 1px; }
-        
-        button#check-btn { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 17px; margin-top: 15px; font-weight: bold; }
-        select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
-        .footer { text-align: center; color: #666; font-size: 11px; margin-top: 15px; }
+        select { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; background-color: white; }
+        button#check-btn { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 18px; margin-top: 20px; font-weight: bold; }
+        .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
+        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -39,63 +67,35 @@
 <img src="logo.png" alt="LOGO" class="logo">
 
 <div class="container">
-    <div class="top-banner-container"><img src="cat.png" alt="貓咪" class="top-banner"></div>
+    <img src="cat.png" alt="貓咪" class="top-banner">
     <div class="card">
-        <h2>我要對答案</h2>
-        
-        <select id="sub" onchange="initChapters()">
-            <option value="">-- 選擇科目 --</option>
-            <option value="electronics">⚡電子學</option>
-            <option value="electric">🔋基本電學</option>
-        </select>
-        <select id="chap" onchange="buildQuiz()">
-            <option value="">-- 選擇章節 --</option>
-        </select>
+        <h2>快速對獎系統</h2>
+        <select id="sub" onchange="initChapters()"><option value="">-- 選擇科目 --</option><option value="electronics">⚡電子學</option><option value="electric">🔋基本電學</option></select>
+        <select id="chap" onchange="buildQuiz()"><option value="">-- 選擇章節 --</option></select>
 
         <div id="quiz-area" style="display:none;">
-            <button id="voice-start" class="voice-btn" onclick="startVoice()">🎤 開啟語音對號 (念 A、B、C...)</button>
-            <div class="info-box">💡 <strong>填寫說明：</strong><br>
-                1. 計算題不需要填寫單位。<br>
-                2. 根號請使用 <strong>sqrt(N)</strong>，例如 √2 寫作 sqrt(2)。<br>
-                3. 平方或次方請使用 <strong>^</strong>，例如 10³ 寫作 10^3。</div>
             <div id="quiz-box"></div>
             <button id="check-btn" onclick="checkAll()">即時核對答案</button>
         </div>
-        <div class="footer">填完點核對，會跳到你開始寫的那一題</div>
     </div>
 </div>
 
 <script>
 let currentAnswers = []; 
-// --- 此處省略你的 db 內容，請直接套用原本的 db 變數 ---
+
 const db = {
     "electronics": {
-        "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845V；2.025V(大約)", "A", "D", "C", "B", "D", "C", "B"],
-        "第二章：二極體及應用電路(上)": ["3.125×10^8", "D", "D", "C", "A", "C", "3.52V；-1.156mA", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7V", "D", "D"],
-        "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)mA", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
+        "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845；2.025", "A", "D", "C", "B", "D", "C", "B"],
+        "第二章：二極體及應用電路(上)": ["3.125×10^8", "D", "D", "C", "A", "C", "3.52；-1.156", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7", "D", "D"],
+        "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
         "第三章：雙極性接面電晶體(上)": ["D", "A", "B", "C", "B", "B", "B", "A", "D", "A", "A", "A", "C", "C"],
         "第三章：雙極性接面電晶體(下)": ["D", "C", "A", "D", "B", "B", "C", "B", "B", "D", "C", "B", "A", "A", "B", "C", "A", "B", "D", "D", "B", "B", "A", "B", "D", "A", "B", "C", "A"]
     },
     "electric": {
         "第一、二章：電學基本概念、電阻": ["B", "B", "B", "C", "D", "C", "A", "A", "D", "A", "B", "D", "C", "C", "D", "A", "C", "B", "B", "C", "D", "D", "A", "C", "B", "C", "C"],
-        "第三章：串並聯電路": [
-           { section: "(1) 手指短路", answers: ["3A", "4A", "B", "C", "B", "C", "B"] },
-           { section: "(2) 串I同；並V同", answers: ["20mW", "24", "3840", "45", "C", "D"] },
-           { section: "(3)惠斯登", answers: ["10V", "4A；2V；-1/3A", "3", "A", "A", "B"] },
-           { section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },
-           { section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },
-           { section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }
-        ],
-        "第四章：直流網路分析": [
-           { section: "(補充)", answers: ["-1", "8"] },
-           { section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },
-           { section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },
-           { section: "(3) 迴路", answers: ["B", "D", "C"] },
-           { section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },
-           { section: "(5) 電源轉換", answers: ["1A；2A", "4/9", "42", "A", "B", "B"] },
-           { section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }
-        ],
-        "第五章：電容及靜電": ["270N 向左","C","D","D","B","B","1.8×10^10","9×10^9","C","1","4","50000V/m","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
+        "第三章：串並聯電路": [{ section: "(1) 手指短路", answers: ["3", "4", "B", "C", "B", "C", "B"] },{ section: "(2) 串I同；並V同", answers: ["20", "24", "3840", "45", "C", "D"] },{ section: "(3)惠斯登", answers: ["10", "4；2；-1/3", "3", "A", "A", "B"] },{ section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },{ section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },{ section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }],
+        "第四章：直流網路分析": [{ section: "(補充)", answers: ["-1", "8"] },{ section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },{ section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },{ section: "(3) 迴路", answers: ["B", "D", "C"] },{ section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },{ section: "(5) 電源轉換", answers: ["1；2", "4/9", "42", "A", "B", "B"] },{ section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }],
+        "第五章：電容及靜電": ["270 向左","C","D","D","B","B","1.8×10^10","9×10^9","C","1","4","50000","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
         "第六章：電感及電磁": ["C","B","D","B","D","C","D","B","B","B","A","B","B","B","B","D","B","B","B","A","A","D","D","C","B","D","C","A","D","A","C","A","D","C","C","A","C","C","B","A","C","D","B","C","D","B","B","A","D","C","B","A","D"],
         "第七章：直流暫態": ["C","B","D","A","B","A","A","A","D","A","C","D","C","D","D","A","D","B","C","A","D","D","B","C","B","A","A","A","C","D","A"]
     }
@@ -107,8 +107,7 @@ function initChapters() {
     c.innerHTML = '<option value="">-- 選擇章節 --</option>';
     if(s && db[s]) {
         Object.keys(db[s]).forEach(name => {
-            let opt = document.createElement('option');
-            opt.value = name; opt.innerText = name;
+            let opt = document.createElement('option'); opt.value = name; opt.innerText = name;
             c.appendChild(opt);
         });
     }
@@ -123,14 +122,13 @@ function buildQuiz() {
     box.innerHTML = ""; currentAnswers = []; 
     let qCount = 0;
     const content = db[s][c];
-    
+
     const addRow = (ans) => {
-        let idx = qCount++;
-        currentAnswers.push(ans);
+        let idx = qCount++; currentAnswers.push(ans);
         box.innerHTML += `
             <div class="q-row" id="row-${idx}">
                 <span class="q-num">第${idx+1}題</span>
-                <input type="text" class="q-input" id="in-${idx}" oninput="autoNext(${idx}, this.value)">
+                <input type="text" class="q-input" id="in-${idx}" oninput="handleInput(${idx}, this.value)">
                 <span class="feedback" id="f-${idx}"></span>
             </div>`;
     };
@@ -146,50 +144,25 @@ function buildQuiz() {
     }
 }
 
-// ✅ 單鍵跳轉功能
-function autoNext(idx, val) {
-    // 如果輸入 A,B,C,D 其中一個字母，且不是最後一題，就自動跳下一格
-    const nextIn = document.getElementById(`in-${idx + 1}`);
-    if (["A", "B", "C", "D", "a", "b", "c", "d"].includes(val) && nextIn) {
-        nextIn.focus();
-    }
-}
-
-// ✅ 語音輸入功能
-function startVoice() {
-    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!Recognition) return alert("您的瀏覽器不支援語音辨識喔！");
-    
-    const rec = new Recognition();
-    rec.lang = 'zh-TW'; 
-    const btn = document.getElementById('voice-start');
-    
-    rec.onstart = () => btn.classList.add('recording'), btn.innerText = "正在聽... (請依序念 A B C)";
-    rec.onend = () => btn.classList.remove('recording'), btn.innerText = "🎤 開啟語音對號";
-    
-    rec.onresult = (e) => {
-        const text = e.results[0][0].transcript.toUpperCase().replace(/\s/g, "");
-        const inputs = document.querySelectorAll('.q-input');
-        let currentIdx = 0;
-        // 找到第一個空的格字開始填
-        while(currentIdx < inputs.length && inputs[currentIdx].value !== "") currentIdx++;
-        
-        for (let char of text) {
-            if (["A","B","C","D"].includes(char) && currentIdx < inputs.length) {
-                inputs[currentIdx].value = char;
-                currentIdx++;
-            }
+// ✅ 偵測輸入並自動跳轉
+function handleInput(idx, val) {
+    // 如果是單一字母 A/B/C/D，就自動跳下一題
+    if (["A", "B", "C", "D", "a", "b", "c", "d"].includes(val.trim()) && val.length === 1) {
+        const nextInput = document.getElementById(`in-${idx + 1}`);
+        if (nextInput) {
+            nextInput.focus();
+            // 確保下一題不會被手機鍵盤擋住
+            nextInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-    };
-    rec.start();
+    }
 }
 
 function checkAll() {
     const inputs = document.querySelectorAll('.q-input');
-    let firstIdx = -1;
+    let firstFilled = -1;
     inputs.forEach((input, i) => {
         let userVal = input.value.trim().toUpperCase();
-        if (userVal !== "" && firstIdx === -1) firstIdx = i;
+        if (userVal !== "" && firstFilled === -1) firstFilled = i;
         const f = document.getElementById(`f-${i}`);
         if (userVal === "") { f.innerText = ""; return; }
         
@@ -197,10 +170,8 @@ function checkAll() {
         if (userVal === correctVal) f.innerHTML = "<span style='color:green'>✅正確</span>";
         else f.innerHTML = `<span style='color:red'>❌錯誤</span><br><span class="correct-ans">正解:${currentAnswers[i]}</span>`;
     });
-
-    if (firstIdx !== -1) {
-        const y = document.getElementById(`row-${firstIdx}`).getBoundingClientRect().top + window.pageYOffset - 80;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+    if (firstFilled !== -1) {
+        window.scrollTo({ top: document.getElementById(`row-${firstFilled}`).offsetTop - 60, behavior: 'smooth' });
     }
 }
 </script>
