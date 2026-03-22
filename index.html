@@ -17,21 +17,31 @@
             letter-spacing: 2pt; /* 全域字距 2pt */
         }
         
-        /* Logo 位置調整，增加與上方距離 */
+        /* 數字與符號間距調回 0 */
+        .q-num, .info-box strong, .section-title, .q-input {
+            letter-spacing: 0 !important;
+        }
+
         .logo { position: absolute; top: 15px; left: 15px; width: 160px; z-index: 10; }
         
-        /* 增加 container 上邊距，確保貓咪不撞到 Logo */
         .container { 
             width: 100%; 
             max-width: 480px; 
-            margin-top: 80px; /* 從 40px 增加到 80px */
+            margin-top: 80px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             position: relative;
         }
         
-        .top-banner { width: 70%; display: block; margin-bottom: 5px; }
+        /* 移除貓咪與內容的間距 */
+        .top-banner { 
+            width: 70%; 
+            display: block; 
+            margin: 0; 
+            padding: 0;
+            line-height: 0; /* 防止圖片下方出現微小縫隙 */
+        }
         
         .card { 
             background: white; 
@@ -40,6 +50,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
             width: 100%; 
             box-sizing: border-box; 
+            margin-top: 0; /* 確保與貓咪緊貼 */
         }
         
         h2 { color: black; text-align: center; margin: 0 0 15px 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
@@ -66,7 +77,6 @@
             gap: 10px; 
         }
         
-        /* 題號改為黑色 */
         .q-num { width: 50px; font-weight: bold; color: black; font-size: 14px; flex-shrink: 0; }
         
         .q-input { 
@@ -79,19 +89,17 @@
             font-size: 18px; 
             text-transform: uppercase; 
             text-align: center;
-            letter-spacing: 0; /* 輸入框內不加寬字距，方便閱讀 */
         }
         
         .q-input:focus { border-color: #1a73e8; background: #fff9db; outline: none; }
         
-        /* 排除字距 2pt 的區域 */
         .feedback { 
             min-width: 75px; 
             font-weight: bold; 
             text-align: right; 
             font-size: 13px; 
             flex-shrink: 0; 
-            letter-spacing: normal; /* 回復正常字距以免擠壓 */
+            letter-spacing: normal; 
         }
         
         .correct-ans { color: #d93025; font-size: 12px; display: block; margin-top: 2px; letter-spacing: normal; }
@@ -107,11 +115,11 @@
             font-family: inherit;
         }
 
-        /* 原本下方的按鈕 */
+        /* ✅ 最下面按鈕改為黑色 */
         button#check-btn { 
             width: 100%; 
             padding: 15px; 
-            background: #1a73e8; 
+            background: #000000; 
             color: white; 
             border: none; 
             border-radius: 8px; 
@@ -121,46 +129,36 @@
             cursor: pointer;
         }
 
-        /* ✅ 隨畫面移動的快速對獎按鈕 (電腦版在右側，手機版在右下) */
+        /* ✅ 直接對獎按鈕：白底黑字 */
         .floating-btn {
             position: fixed;
-            background: #1a73e8;
-            color: white;
-            border: none;
+            background: #ffffff;
+            color: #000000;
+            border: 2px solid #000000; /* 加入細黑邊框更有質感 */
             border-radius: 50px;
             padding: 12px 20px;
             font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             cursor: pointer;
             z-index: 100;
-            display: none; /* 初始隱藏，選完章節才顯示 */
+            display: none; 
             align-items: center;
             gap: 5px;
             font-family: inherit;
             transition: transform 0.2s;
+            letter-spacing: 0; /* 按鈕文字不加寬間距 */
         }
         .floating-btn:active { transform: scale(0.9); }
 
-        /* 電腦版：在內容區塊右側 */
         @media (min-width: 800px) {
-            .floating-btn {
-                display: none; /* 透過 JS 控制顯示 */
-                left: calc(50% + 250px);
-                bottom: 100px;
-            }
+            .floating-btn { left: calc(50% + 250px); bottom: 100px; }
         }
 
-        /* 手機版：在右下角 */
         @media (max-width: 799px) {
-            .floating-btn {
-                display: none; /* 透過 JS 控制顯示 */
-                right: 20px;
-                bottom: 30px;
-                padding: 15px 20px;
-                font-size: 14px;
-            }
+            .floating-btn { right: 20px; bottom: 30px; padding: 12px 18px; font-size: 14px; }
         }
 
+        .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
         .footer { text-align: center; color: #666; font-size: 12px; margin-top: 15px; padding-bottom: 40px; }
     </style>
 </head>
@@ -197,26 +195,25 @@
 </div>
 
 <button class="floating-btn" id="quick-check" onclick="checkAll()">
-    直接對了啦🔥
-</button>
+    直接對了啦⚡</button>
 
 <script>
 let currentAnswers = []; 
 
 const db = {
     "electronics": {
-        "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845V；2.025V(大約)", "A", "D", "C", "B", "D", "C", "B"],
-        "第二章：二極體及應用電路(上)": ["3.125×10^8", "D", "D", "C", "A", "C", "3.52V；-1.156mA", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7V", "D", "D"],
-        "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)mA", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
+        "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845；2.025", "A", "D", "C", "B", "D", "C", "B"],
+        "第二章：二極體及應用電路(上)": ["3.125*10^8", "D", "D", "C", "A", "C", "3.52；-1.156", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7V", "D", "D"],
+        "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
         "第三章：雙極性接面電晶體(上)": ["D", "A", "B", "C", "B", "B", "B", "A", "D", "A", "A", "A", "C", "C"],
         "第三章：雙極性接面電晶體(下)": ["D", "C", "A", "D", "B", "B", "C", "B", "B", "D", "C", "B", "A", "A", "B", "C", "A", "B", "D", "D", "B", "B", "A", "B", "D", "A", "B", "C", "A"],
         "第四章：雙極性接面電晶體放大電路": ["B", "B", "C", "B", "A", "B", "D", "C", "D", "C", "C", "A", "D", "C", "C", "D", "D", "D", "D", "B", "B", "C", "D", "A", "B", "A", "C", "A", "D"]
     },
     "electric": {
         "第一、二章：電學基本概念、電阻": ["B", "B", "B", "C", "D", "C", "A", "A", "D", "A", "B", "D", "C", "C", "D", "A", "C", "B", "B", "C", "D", "D", "A", "C", "B", "C", "C"],
-        "第三章：串並聯電路": [{ section: "(1) 手指短路", answers: ["3A", "4A", "B", "C", "B", "C", "B"] },{ section: "(2) 串I同；並V同", answers: ["20mW", "24", "3840", "45", "C", "D"] },{ section: "(3)惠斯登", answers: ["10V", "4A；2V；-1/3A", "3", "A", "A", "B"] },{ section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },{ section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },{ section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }],
-        "第四章：直流網路分析": [{ section: "(補充)", answers: ["-1", "8"] },{ section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },{ section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },{ section: "(3) 迴路", answers: ["B", "D", "C"] },{ section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },{ section: "(5) 電源轉換", answers: ["1A；2A", "4/9", "42", "A", "B", "B"] },{ section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }],
-        "第五章：電容及靜電": ["270N 向左","C","D","D","B","B","1.8×10^10","9×10^9","C","1","4","50000V/m","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
+        "第三章：串並聯電路": [{ section: "(1) 手指短路", answers: ["3", "4", "B", "C", "B", "C", "B"] },{ section: "(2) 串I同；並V同", answers: ["20", "24", "3840", "45", "C", "D"] },{ section: "(3)惠斯登", answers: ["10", "4；2；-1/3", "3", "A", "A", "B"] },{ section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },{ section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },{ section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }],
+        "第四章：直流網路分析": [{ section: "(補充)", answers: ["-1", "8"] },{ section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },{ section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },{ section: "(3) 迴路", answers: ["B", "D", "C"] },{ section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },{ section: "(5) 電源轉換", answers: ["1；2", "4/9", "42", "A", "B", "B"] },{ section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }],
+        "第五章：電容及靜電": ["270 向左","C","D","D","B","B","1.8*10^10","9*10^9","C","1","4","50000","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
         "第六章：電感及電磁": ["C","B","D","B","D","C","D","B","B","B","A","B","B","B","B","D","B","B","B","A","A","D","D","C","B","D","C","A","D","A","C","A","D","C","C","A","C","C","B","A","C","D","B","C","D","B","B","A","D","C","B","A","D"],
         "第七章：直流暫態": ["C","B","D","A","B","A","A","A","D","A","C","D","C","D","D","A","D","B","C","A","D","D","B","C","B","A","A","A","C","D","A"]
     }
@@ -247,7 +244,7 @@ function buildQuiz() {
     }
     
     document.getElementById('quiz-area').style.display = "block";
-    floatBtn.style.display = "flex"; // 顯示懸浮按鈕
+    floatBtn.style.display = "flex"; 
     
     box.innerHTML = ""; currentAnswers = []; 
     let qCount = 0;
