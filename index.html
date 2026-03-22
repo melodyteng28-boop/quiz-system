@@ -3,71 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專業科目自動對獎系統</title>
+    <title>我要對答案</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #51A8DD; 
-            font-family: 'Noto Sans TC', sans-serif; 
-            padding: 10px; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            min-height: 100vh; 
-        }
+        body { background-color: #51A8DD; font-family: 'Noto Sans TC', sans-serif; padding: 10px; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
         .logo { position: absolute; top: 10px; left: 10px; width: 200px; z-index: 10; }
         .container { width: 100%; max-width: 480px; margin-top: 40px; display: flex; flex-direction: column; align-items: center; }
         .top-banner { width: 70%; display: block; margin-bottom: -1px; }
-        
-        .card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-            width: 100%; 
-            box-sizing: border-box; 
-        }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; box-sizing: border-box; }
         h2 { color: black; text-align: center; margin: 0 0 15px 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        
-        /* 說明框樣式 */
-        .info-box { 
-            background: #fff9db; 
-            border: 1px solid #f59f00; 
-            padding: 12px; 
-            border-radius: 8px; 
-            font-size: 14px; 
-            color: #856404; 
-            margin-bottom: 20px; 
-            line-height: 1.6;
-        }
-
-        .q-row { 
-            display: flex; 
-            align-items: center; 
-            margin-bottom: 10px; 
-            background: #fdfdfd; 
-            padding: 10px; 
-            border-radius: 8px; 
-            border: 1px solid #eee; 
-            gap: 10px; 
-        }
+        .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 20px; line-height: 1.6; }
+        .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fdfdfd; padding: 10px; border-radius: 8px; border: 1px solid #eee; gap: 10px; }
         .q-num { width: 50px; font-weight: bold; color: #1a73e8; font-size: 14px; flex-shrink: 0; }
-        .q-input { 
-            flex: 1; 
-            min-width: 0; 
-            border: 1px solid #ccc; 
-            height: 40px; 
-            padding: 0 10px; 
-            border-radius: 5px; 
-            font-size: 18px; 
-            text-transform: uppercase; 
-            text-align: center; 
-        }
+        .q-input { flex: 1; min-width: 0; border: 1px solid #ccc; height: 40px; padding: 0 10px; border-radius: 5px; font-size: 18px; text-transform: uppercase; text-align: center; }
         .q-input:focus { border-color: #1a73e8; background: #fff9db; outline: none; }
-        
         .feedback { min-width: 75px; font-weight: bold; text-align: right; font-size: 13px; flex-shrink: 0; }
         .correct-ans { color: #d93025; font-size: 12px; display: block; margin-top: 2px; }
-
         select { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; background-color: white; }
         button#check-btn { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 18px; margin-top: 20px; font-weight: bold; }
         .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
@@ -82,8 +33,14 @@
     <img src="cat.png" alt="貓咪" class="top-banner">
     <div class="card">
         <h2>我要對答案</h2>
-        <select id="sub" onchange="initChapters()"><option value="">-- 選擇科目 --</option><option value="electronics">⚡電子學</option><option value="electric">🔋基本電學</option></select>
-        <select id="chap" onchange="buildQuiz()"><option value="">-- 選擇章節 --</option></select>
+        <select id="sub" onchange="initChapters()">
+            <option value="">-- 選擇科目 --</option>
+            <option value="electronics">⚡電子學</option>
+            <option value="electric">🔋基本電學</option>
+        </select>
+        <select id="chap" onchange="buildQuiz()">
+            <option value="">-- 選擇章節 --</option>
+        </select>
 
         <div id="quiz-area" style="display:none;">
             <div class="info-box">
@@ -103,6 +60,7 @@
 <script>
 let currentAnswers = []; 
 
+// 此處保留你的 db 內容...
 const db = {
     "electronics": {
         "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845V；2.025V(大約)", "A", "D", "C", "B", "D", "C", "B"],
@@ -184,8 +142,17 @@ function checkAll() {
         if (userVal === "") { f.innerText = ""; return; }
         
         let rawCorrect = currentAnswers[i].toUpperCase();
-        if (userVal === rawCorrect) f.innerHTML = "<span style='color:green'>✅正確</span>";
-        else f.innerHTML = `<span style='color:red'>❌錯誤</span><br><span class="correct-ans">正解:${currentAnswers[i]}</span>`;
+        
+        // 判斷正確答案是否為選擇題選項 (A, B, C, D 之一)
+        const isChoiceQ = ["A", "B", "C", "D"].includes(rawCorrect);
+
+        if (userVal === rawCorrect) {
+            f.innerHTML = "<span style='color:green'>✅正確</span>";
+        } else {
+            // 如果是選擇題，只顯示錯誤；如果是計算題，則顯示正確答案
+            let msg = isChoiceQ ? "" : `<br><span class="correct-ans">正解:${currentAnswers[i]}</span>`;
+            f.innerHTML = `<span style='color:red'>❌錯誤</span>${msg}`;
+        }
     });
     if (firstFilled !== -1) {
         window.scrollTo({ top: document.getElementById(`row-${firstFilled}`).offsetTop - 60, behavior: 'smooth' });
