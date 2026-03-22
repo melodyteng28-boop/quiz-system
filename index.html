@@ -126,7 +126,7 @@
             cursor: pointer;
         }
 
-        /* 懸浮按鈕核心樣式 */
+        /* 懸浮按鈕：改用 top 定位配合 JS 修正 */
         .floating-btn {
             position: fixed;
             background: #ffffff;
@@ -142,16 +142,16 @@
             align-items: center;
             font-family: inherit;
             letter-spacing: 0;
-            /* 預設位置 */
+            /* 初始位置 */
             right: 20px;
-            bottom: 30px;
+            top: 0; 
+            will-change: transform; /* 優化效能 */
         }
 
         @media (min-width: 800px) {
             .floating-btn { 
                 left: calc(50% + 250px); 
                 right: auto;
-                bottom: 100px; 
             }
         }
 
@@ -265,25 +265,26 @@ function buildQuiz() {
             }
         });
     }
+    // 建立完後立即修正一次位置
+    adjustFloatingBtn();
 }
 
-// ✅ 核心修正：讓按鈕跟著鍵盤浮動的腳本
+// ✅ 最終修正：使用 VisualViewport 位移而非 CSS Bottom
 function adjustFloatingBtn() {
     const btn = document.getElementById('quick-check');
-    if (window.visualViewport) {
+    if (window.visualViewport && btn.style.display !== 'none') {
         const viewport = window.visualViewport;
-        // 計算按鈕應該離可視底部的距離
-        const bottomOffset = 20; 
-        // 鍵盤彈出時，可視高度會變小，我們把按鈕固定在可視區域底部
-        const newBottom = window.innerHeight - viewport.height + bottomOffset;
         
-        if (window.innerWidth < 800) { // 手機版才執行移動
-            btn.style.bottom = `${newBottom}px`;
-        }
+        // 算出按鈕相對於整個頁面頂端的絕對位置
+        // 讓按鈕固定在可視區域底部向上約 60px 的地方 (避免擋住瀏覽器底部選單)
+        const offsetFromBottom = 60;
+        const targetY = viewport.offsetTop + viewport.height - offsetFromBottom;
+        
+        btn.style.transform = `translateY(${targetY}px)`;
     }
 }
 
-// 監聽可視區域變化（包含鍵盤彈出）
+// 監聽鍵盤彈出、捲動、調整大小
 if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', adjustFloatingBtn);
     window.visualViewport.addEventListener('scroll', adjustFloatingBtn);
