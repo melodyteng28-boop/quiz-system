@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我要對答案</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -14,10 +14,9 @@
             display: flex; 
             justify-content: center; 
             min-height: 100vh;
-            letter-spacing: 2pt; /* 全域字距 2pt */
+            letter-spacing: 2pt;
         }
         
-        /* 數字與符號間距調回 0 */
         .q-num, .info-box strong, .section-title, .q-input {
             letter-spacing: 0 !important;
         }
@@ -34,13 +33,12 @@
             position: relative;
         }
         
-        /* 移除貓咪與內容的間距 */
         .top-banner { 
             width: 70%; 
             display: block; 
             margin: 0; 
             padding: 0;
-            line-height: 0; /* 防止圖片下方出現微小縫隙 */
+            line-height: 0;
         }
         
         .card { 
@@ -50,7 +48,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
             width: 100%; 
             box-sizing: border-box; 
-            margin-top: 0; /* 確保與貓咪緊貼 */
+            margin-top: 0;
         }
         
         h2 { color: black; text-align: center; margin: 0 0 15px 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
@@ -115,7 +113,6 @@
             font-family: inherit;
         }
 
-        /* ✅ 最下面按鈕改為黑色 */
         button#check-btn { 
             width: 100%; 
             padding: 15px; 
@@ -129,33 +126,33 @@
             cursor: pointer;
         }
 
-        /* ✅ 直接對獎按鈕：白底黑字 */
+        /* 懸浮按鈕核心樣式 */
         .floating-btn {
             position: fixed;
             background: #ffffff;
             color: #000000;
-            border: 2px solid #000000; /* 加入細黑邊框更有質感 */
+            border: 2px solid #000000;
             border-radius: 50px;
-            padding: 12px 20px;
+            padding: 10px 18px;
             font-weight: bold;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             cursor: pointer;
-            z-index: 100;
+            z-index: 9999; 
             display: none; 
             align-items: center;
-            gap: 5px;
             font-family: inherit;
-            transition: transform 0.2s;
-            letter-spacing: 0; /* 按鈕文字不加寬間距 */
+            letter-spacing: 0;
+            /* 預設位置 */
+            right: 20px;
+            bottom: 30px;
         }
-        .floating-btn:active { transform: scale(0.9); }
 
         @media (min-width: 800px) {
-            .floating-btn { left: calc(50% + 250px); bottom: 100px; }
-        }
-
-        @media (max-width: 799px) {
-            .floating-btn { right: 20px; bottom: 30px; padding: 12px 18px; font-size: 14px; }
+            .floating-btn { 
+                left: calc(50% + 250px); 
+                right: auto;
+                bottom: 100px; 
+            }
         }
 
         .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
@@ -194,8 +191,7 @@
     </div>
 </div>
 
-<button class="floating-btn" id="quick-check" onclick="checkAll()">
-    直接對了啦⚡</button>
+<button class="floating-btn" id="quick-check" onclick="checkAll()">直接對了啦⚡</button>
 
 <script>
 let currentAnswers = []; 
@@ -269,6 +265,28 @@ function buildQuiz() {
             }
         });
     }
+}
+
+// ✅ 核心修正：讓按鈕跟著鍵盤浮動的腳本
+function adjustFloatingBtn() {
+    const btn = document.getElementById('quick-check');
+    if (window.visualViewport) {
+        const viewport = window.visualViewport;
+        // 計算按鈕應該離可視底部的距離
+        const bottomOffset = 20; 
+        // 鍵盤彈出時，可視高度會變小，我們把按鈕固定在可視區域底部
+        const newBottom = window.innerHeight - viewport.height + bottomOffset;
+        
+        if (window.innerWidth < 800) { // 手機版才執行移動
+            btn.style.bottom = `${newBottom}px`;
+        }
+    }
+}
+
+// 監聽可視區域變化（包含鍵盤彈出）
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', adjustFloatingBtn);
+    window.visualViewport.addEventListener('scroll', adjustFloatingBtn);
 }
 
 function handleInput(idx, val) {
