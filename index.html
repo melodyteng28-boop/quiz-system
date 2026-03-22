@@ -3,121 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專業科目自動對獎系統</title>
+    <title>專業科目自動對獎系統 - 進化版</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #51A8DD; 
-            font-family: 'Noto Sans TC', -apple-system, "Microsoft JhengHei", sans-serif; 
-            padding: 10px; 
-            margin: 0;
-            display: flex; 
-            justify-content: center; 
-            position: relative; 
-            min-height: 100vh;
-        }
-
-        .logo {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 200px;
-            height: auto;
-            z-index: 10;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px; 
-            margin-top: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .top-banner-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            line-height: 0;
-        }
-
-        .top-banner {
-            width: 75%; 
-            height: auto;
-            display: block;
-            margin-bottom: -1px;
-        }
-
-        .card { 
-            background: white; 
-            padding: 15px; /* 縮小內距，爭取水平空間 */
-            border-radius: 15px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-            width: 100%;
-            box-sizing: border-box; 
-            position: relative;
-            z-index: 5;
-        }
-
-        h2 { 
-            color: black; 
-            text-align: center; 
-            margin-top: 0;
-            margin-bottom: 15px; 
-            border-bottom: 2px solid #eee; 
-            padding-bottom: 10px; 
-        }
+        body { background-color: #51A8DD; font-family: 'Noto Sans TC', sans-serif; padding: 10px; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        .logo { position: absolute; top: 10px; left: 10px; width: 200px; z-index: 10; }
+        .container { width: 100%; max-width: 480px; margin-top: 50px; display: flex; flex-direction: column; align-items: center; }
+        .top-banner-container { width: 100%; display: flex; justify-content: center; line-height: 0; }
+        .top-banner { width: 75%; display: block; margin-bottom: -1px; }
+        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; box-sizing: border-box; position: relative; z-index: 5; }
+        h2 { color: black; text-align: center; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        /* 語音按鈕樣式 */
+        .voice-btn { background: #34a853; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .voice-btn.recording { background: #ea4335; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 10px; border-radius: 8px; font-size: 13px; color: #856404; margin-bottom: 15px; }
         .section-title { color: #d93025; background: #fff1f0; padding: 6px 10px; border-left: 5px solid #d93025; margin: 20px 0 10px 0; font-size: 14px; font-weight: bold; }
-        label { font-weight: bold; color: black; display: block; margin-top: 10px; font-size: 14px; }
-        select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
         
-        /* ✅ 核心修正：不換行且左移 */
-        .q-row { 
-            display: flex; 
-            flex-wrap: nowrap; /* 強制不換行 */
-            align-items: center; 
-            margin-bottom: 8px; 
-            background: #fdfdfd; 
-            padding: 8px 5px; /* 減少左右內距，讓內容更靠邊 */
-            border-radius: 8px; 
-            border: 1px solid #eee; 
-            overflow: hidden; /* 防止內容溢出 */
-        }
-
-        .q-num { 
-            width: 45px; /* 從 65px 縮小，騰出空間 */
-            font-weight: bold; 
-            color: #1a73e8; 
-            font-size: 12px; 
-            flex-shrink: 0; /* 禁止縮小 */
-        }
-
-        .q-input { 
-            flex: 1; /* 自動填滿剩餘空間 */
-            min-width: 0; /* 允許輸入框縮得很小 */
-            border: 1px solid #ccc; 
-            height: 35px; 
-            padding: 0 8px; 
-            border-radius: 5px; 
-            font-size: 15px; 
-            margin: 0 5px;
-        }
-
-        .feedback { 
-            min-width: 75px; /* 稍微縮減寬度 */
-            font-weight: bold; 
-            text-align: right; 
-            font-size: 12px; 
-            flex-shrink: 0; 
-            white-space: nowrap; /* 強制文字不折行 */
-        }
-
+        .q-row { display: flex; flex-wrap: nowrap; align-items: center; margin-bottom: 8px; background: #fdfdfd; padding: 8px 5px; border-radius: 8px; border: 1px solid #eee; }
+        .q-num { width: 45px; font-weight: bold; color: #1a73e8; font-size: 12px; flex-shrink: 0; }
+        .q-input { flex: 1; min-width: 0; border: 1px solid #ccc; height: 35px; padding: 0 8px; border-radius: 5px; font-size: 16px; margin: 0 5px; text-transform: uppercase; }
+        .q-input:focus { border-color: #1a73e8; outline: none; background: #e8f0fe; }
+        .feedback { min-width: 75px; font-weight: bold; text-align: right; font-size: 12px; flex-shrink: 0; white-space: nowrap; }
         .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 1px; }
         
-        button { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 17px; margin-top: 15px; font-weight: bold; }
+        button#check-btn { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 17px; margin-top: 15px; font-weight: bold; }
+        select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
         .footer { text-align: center; color: #666; font-size: 11px; margin-top: 15px; }
     </style>
 </head>
@@ -125,40 +38,33 @@
 
 <img src="logo.png" alt="LOGO" class="logo">
 
-<div class="container" id="main-container">
-    <div class="top-banner-container">
-        <img src="cat.png" alt="貓咪大圖" class="top-banner">
-    </div>
-
+<div class="container">
+    <div class="top-banner-container"><img src="cat.png" alt="貓咪" class="top-banner"></div>
     <div class="card">
         <h2>我要對答案</h2>
         
-        <label>選擇科目：</label>
         <select id="sub" onchange="initChapters()">
-            <option value="">-- 請選擇科目 --</option>
+            <option value="">-- 選擇科目 --</option>
             <option value="electronics">⚡電子學</option>
             <option value="electric">🔋基本電學</option>
         </select>
-
-        <label>選擇章節：</label>
         <select id="chap" onchange="buildQuiz()">
             <option value="">-- 選擇章節 --</option>
         </select>
 
         <div id="quiz-area" style="display:none;">
-            <div class="info-box">
-                💡 <strong>填寫說明：</strong><br>
-                1. 計算題不需單位。 2. 根號用 <strong>sqrt(N)</strong>，平方用 <strong>^</strong>。
-            </div>
+            <button id="voice-start" class="voice-btn" onclick="startVoice()">🎤 開啟語音對號 (念 A、B、C...)</button>
+            <div class="info-box">💡 <b>快充模式：</b>打入 A/B/C/D 會自動跳下一題。</div>
             <div id="quiz-box"></div>
             <button id="check-btn" onclick="checkAll()">即時核對答案</button>
         </div>
-        <div class="footer">填寫完後點擊按鈕，自動對齊作答處</div>
+        <div class="footer">填完點核對，會跳到你開始寫的那一題</div>
     </div>
 </div>
 
 <script>
 let currentAnswers = []; 
+// --- 此處省略你的 db 內容，請直接套用原本的 db 變數 ---
 const db = {
     "electronics": {
         "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845V；2.025V(大約)", "A", "D", "C", "B", "D", "C", "B"],
@@ -203,76 +109,96 @@ function initChapters() {
             c.appendChild(opt);
         });
     }
-    document.getElementById('quiz-area').style.display = "none";
 }
 
 function buildQuiz() {
     const s = document.getElementById('sub').value;
     const c = document.getElementById('chap').value;
     const box = document.getElementById('quiz-box');
-    const area = document.getElementById('quiz-area');
-    box.innerHTML = "";
-    currentAnswers = []; 
-    if(!c) { area.style.display = "none"; return; }
-    area.style.display = "block";
-    
+    if(!c) { document.getElementById('quiz-area').style.display = "none"; return; }
+    document.getElementById('quiz-area').style.display = "block";
+    box.innerHTML = ""; currentAnswers = []; 
     let qCount = 0;
     const content = db[s][c];
-    if (Array.isArray(content)) {
-        if (typeof content[0] === 'string') {
-            content.forEach((ans) => addQuestionRow(ans));
-        } else {
-            content.forEach((group) => {
-                if(group.section) box.innerHTML += `<div class="section-title">${group.section}</div>`;
-                group.answers.forEach((ans) => addQuestionRow(ans));
-            });
-        }
-    }
-
-    function addQuestionRow(ans) {
-        let currentIdx = qCount;
+    
+    const addRow = (ans) => {
+        let idx = qCount++;
         currentAnswers.push(ans);
         box.innerHTML += `
-            <div class="q-row" id="row-${currentIdx}">
-                <span class="q-num">第${currentIdx + 1}題</span>
-                <input type="text" class="q-input" placeholder="答案">
-                <span class="feedback" id="f-${currentIdx}"></span>
+            <div class="q-row" id="row-${idx}">
+                <span class="q-num">第${idx+1}題</span>
+                <input type="text" class="q-input" id="in-${idx}" oninput="autoNext(${idx}, this.value)">
+                <span class="feedback" id="f-${idx}"></span>
             </div>`;
-        qCount++;
+    };
+
+    if (Array.isArray(content)) {
+        content.forEach(item => {
+            if (typeof item === 'string') addRow(item);
+            else {
+                if(item.section) box.innerHTML += `<div class="section-title">${item.section}</div>`;
+                item.answers.forEach(addRow);
+            }
+        });
     }
+}
+
+// ✅ 單鍵跳轉功能
+function autoNext(idx, val) {
+    // 如果輸入 A,B,C,D 其中一個字母，且不是最後一題，就自動跳下一格
+    const nextIn = document.getElementById(`in-${idx + 1}`);
+    if (["A", "B", "C", "D", "a", "b", "c", "d"].includes(val) && nextIn) {
+        nextIn.focus();
+    }
+}
+
+// ✅ 語音輸入功能
+function startVoice() {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition) return alert("您的瀏覽器不支援語音辨識喔！");
+    
+    const rec = new Recognition();
+    rec.lang = 'zh-TW'; 
+    const btn = document.getElementById('voice-start');
+    
+    rec.onstart = () => btn.classList.add('recording'), btn.innerText = "正在聽... (請依序念 A B C)";
+    rec.onend = () => btn.classList.remove('recording'), btn.innerText = "🎤 開啟語音對號";
+    
+    rec.onresult = (e) => {
+        const text = e.results[0][0].transcript.toUpperCase().replace(/\s/g, "");
+        const inputs = document.querySelectorAll('.q-input');
+        let currentIdx = 0;
+        // 找到第一個空的格字開始填
+        while(currentIdx < inputs.length && inputs[currentIdx].value !== "") currentIdx++;
+        
+        for (let char of text) {
+            if (["A","B","C","D"].includes(char) && currentIdx < inputs.length) {
+                inputs[currentIdx].value = char;
+                currentIdx++;
+            }
+        }
+    };
+    rec.start();
 }
 
 function checkAll() {
     const inputs = document.querySelectorAll('.q-input');
-    let firstFilledIndex = -1;
+    let firstIdx = -1;
     inputs.forEach((input, i) => {
-        let userVal = input.value.trim().toLowerCase().replace(/\s+/g, ""); 
-        if (userVal !== "" && firstFilledIndex === -1) firstFilledIndex = i;
-        let rawCorrect = currentAnswers[i];
-        if (!rawCorrect) return;
-        let correctVal = rawCorrect.trim().toLowerCase().replace(/\s+/g, "");
+        let userVal = input.value.trim().toUpperCase();
+        if (userVal !== "" && firstIdx === -1) firstIdx = i;
         const f = document.getElementById(`f-${i}`);
         if (userVal === "") { f.innerText = ""; return; }
-        try {
-            let uExp = userVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
-            let cExp = correctVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
-            let uNum = eval(uExp), cNum = eval(cExp);
-            if (Math.abs(uNum - cNum) < 0.01) { f.innerHTML = "<span style='color:green'>✅正確</span>"; } 
-            else { throw "err"; }
-        } catch (e) {
-            if (userVal.toUpperCase() === correctVal.toUpperCase()) { f.innerHTML = "<span style='color:green'>✅正確</span>"; } 
-            else {
-                let showAns = (!["A","B","C","D"].includes(rawCorrect.toUpperCase())) ? `<br><span class="correct-ans">正解:${rawCorrect}</span>` : "";
-                f.innerHTML = `<span style='color:red'>❌錯誤</span>${showAns}`;
-            }
-        }
+        
+        let correctVal = currentAnswers[i].toUpperCase();
+        if (userVal === correctVal) f.innerHTML = "<span style='color:green'>✅正確</span>";
+        else f.innerHTML = `<span style='color:red'>❌錯誤</span><br><span class="correct-ans">正解:${currentAnswers[i]}</span>`;
     });
 
-    if (firstFilledIndex !== -1) {
-        const target = document.getElementById(`row-${firstFilledIndex}`);
-        const y = target.getBoundingClientRect().top + window.pageYOffset - 80;
+    if (firstIdx !== -1) {
+        const y = document.getElementById(`row-${firstIdx}`).getBoundingClientRect().top + window.pageYOffset - 80;
         window.scrollTo({ top: y, behavior: 'smooth' });
-    } else { alert("請先輸入答案喔！"); }
+    }
 }
 </script>
 </body>
