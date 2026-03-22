@@ -17,12 +17,11 @@
             min-height: 100vh;
         }
 
-        /* LOGO 設定 */
         .logo {
             position: absolute;
             top: 10px;
             left: 10px;
-            width: 200px;
+            width: 100px;
             height: auto;
             z-index: 10;
         }
@@ -30,7 +29,7 @@
         .container {
             width: 100%;
             max-width: 480px; 
-            margin-top: 60px; /* 調整適中位置，不擋住 Logo 也不太低 */
+            margin-top: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -40,19 +39,19 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            line-height: 0; /* 消除圖片下方的微小藍色縫隙 */
+            line-height: 0;
         }
 
         .top-banner {
             width: 75%; 
             height: auto;
             display: block;
-            margin-bottom: -1px; /* 強制與下方卡片重疊 1px 確保無縫 */
+            margin-bottom: -1px;
         }
 
         .card { 
             background: white; 
-            padding: 25px; 
+            padding: 15px; /* 縮小內距，爭取水平空間 */
             border-radius: 15px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
             width: 100%;
@@ -65,26 +64,61 @@
             color: black; 
             text-align: center; 
             margin-top: 0;
-            margin-bottom: 20px; 
+            margin-bottom: 15px; 
             border-bottom: 2px solid #eee; 
             padding-bottom: 10px; 
         }
 
-        .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 15px; line-height: 1.5; }
-        .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
-        label { font-weight: bold; color: black; display: block; margin-top: 15px; }
-        select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; font-family: inherit; }
+        .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 10px; border-radius: 8px; font-size: 13px; color: #856404; margin-bottom: 15px; }
+        .section-title { color: #d93025; background: #fff1f0; padding: 6px 10px; border-left: 5px solid #d93025; margin: 20px 0 10px 0; font-size: 14px; font-weight: bold; }
+        label { font-weight: bold; color: black; display: block; margin-top: 10px; font-size: 14px; }
+        select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
         
-        /* 答題列樣式 */
-        .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fdfdfd; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
-        .q-num { width: 65px; font-weight: bold; color: #1a73e8; font-size: 14px; }
-        .q-input { flex: 1; margin: 0 10px; border: 1px solid #ccc; height: 40px; padding: 5px 10px; border-radius: 5px; font-size: 16px; }
-        .feedback { min-width: 90px; font-weight: bold; text-align: right; font-size: 13px; }
-        .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 2px; }
+        /* ✅ 核心修正：不換行且左移 */
+        .q-row { 
+            display: flex; 
+            flex-wrap: nowrap; /* 強制不換行 */
+            align-items: center; 
+            margin-bottom: 8px; 
+            background: #fdfdfd; 
+            padding: 8px 5px; /* 減少左右內距，讓內容更靠邊 */
+            border-radius: 8px; 
+            border: 1px solid #eee; 
+            overflow: hidden; /* 防止內容溢出 */
+        }
+
+        .q-num { 
+            width: 45px; /* 從 65px 縮小，騰出空間 */
+            font-weight: bold; 
+            color: #1a73e8; 
+            font-size: 12px; 
+            flex-shrink: 0; /* 禁止縮小 */
+        }
+
+        .q-input { 
+            flex: 1; /* 自動填滿剩餘空間 */
+            min-width: 0; /* 允許輸入框縮得很小 */
+            border: 1px solid #ccc; 
+            height: 35px; 
+            padding: 0 8px; 
+            border-radius: 5px; 
+            font-size: 15px; 
+            margin: 0 5px;
+        }
+
+        .feedback { 
+            min-width: 75px; /* 稍微縮減寬度 */
+            font-weight: bold; 
+            text-align: right; 
+            font-size: 12px; 
+            flex-shrink: 0; 
+            white-space: nowrap; /* 強制文字不折行 */
+        }
+
+        .correct-ans { color: #d93025; display: block; font-size: 11px; margin-top: 1px; }
         
-        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 20px; font-weight: bold; }
-        button:hover { background: #1557b0; }
-        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; }
+        button { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 17px; margin-top: 15px; font-weight: bold; }
+        .footer { text-align: center; color: #666; font-size: 11px; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -114,21 +148,17 @@
         <div id="quiz-area" style="display:none;">
             <div class="info-box">
                 💡 <strong>填寫說明：</strong><br>
-                1. 計算題不需要填寫單位。<br>
-                2. 根號請使用 <strong>sqrt(N)</strong>，例如 √2 寫作 sqrt(2)。<br>
-                3. 平方或次方請使用 <strong>^</strong>，例如 10³ 寫作 10^3。
+                1. 計算題不需單位。 2. 根號用 <strong>sqrt(N)</strong>，平方用 <strong>^</strong>。
             </div>
             <div id="quiz-box"></div>
             <button id="check-btn" onclick="checkAll()">即時核對答案</button>
         </div>
-
-        <div class="footer">填寫完畢後點擊按鈕，自動跳轉至第一個作答題</div>
+        <div class="footer">填寫完後點擊按鈕，自動對齊作答處</div>
     </div>
 </div>
 
 <script>
 let currentAnswers = []; 
-
 const db = {
     "electronics": {
         "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845V；2.025V(大約)", "A", "D", "C", "B", "D", "C", "B"],
@@ -188,7 +218,6 @@ function buildQuiz() {
     
     let qCount = 0;
     const content = db[s][c];
-
     if (Array.isArray(content)) {
         if (typeof content[0] === 'string') {
             content.forEach((ans) => addQuestionRow(ans));
@@ -205,7 +234,7 @@ function buildQuiz() {
         currentAnswers.push(ans);
         box.innerHTML += `
             <div class="q-row" id="row-${currentIdx}">
-                <span class="q-num">第 ${currentIdx + 1} 題</span>
+                <span class="q-num">第${currentIdx + 1}題</span>
                 <input type="text" class="q-input" placeholder="答案">
                 <span class="feedback" id="f-${currentIdx}"></span>
             </div>`;
@@ -216,48 +245,34 @@ function buildQuiz() {
 function checkAll() {
     const inputs = document.querySelectorAll('.q-input');
     let firstFilledIndex = -1;
-
     inputs.forEach((input, i) => {
         let userVal = input.value.trim().toLowerCase().replace(/\s+/g, ""); 
-        
-        // 紀錄第一個填寫的位置
-        if (userVal !== "" && firstFilledIndex === -1) {
-            firstFilledIndex = i;
-        }
-
+        if (userVal !== "" && firstFilledIndex === -1) firstFilledIndex = i;
         let rawCorrect = currentAnswers[i];
         if (!rawCorrect) return;
         let correctVal = rawCorrect.trim().toLowerCase().replace(/\s+/g, "");
         const f = document.getElementById(`f-${i}`);
-        
         if (userVal === "") { f.innerText = ""; return; }
-
         try {
             let uExp = userVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
             let cExp = correctVal.replace(/sqrt\((.+?)\)/g, "Math.sqrt($1)").replace(/\^/g, "**");
             let uNum = eval(uExp), cNum = eval(cExp);
-
-            if (Math.abs(uNum - cNum) < 0.01) {
-                f.innerHTML = "<span style='color:green'>✅ 正確</span>";
-            } else { throw "err"; }
+            if (Math.abs(uNum - cNum) < 0.01) { f.innerHTML = "<span style='color:green'>✅正確</span>"; } 
+            else { throw "err"; }
         } catch (e) {
-            if (userVal.toUpperCase() === correctVal.toUpperCase()) {
-                f.innerHTML = "<span style='color:green'>✅ 正確</span>";
-            } else {
-                let showAns = (!["A","B","C","D"].includes(rawCorrect.toUpperCase())) ? `<br><span class="correct-ans">正解：${rawCorrect}</span>` : "";
-                f.innerHTML = `<span style='color:red'>❌ 錯誤</span>${showAns}`;
+            if (userVal.toUpperCase() === correctVal.toUpperCase()) { f.innerHTML = "<span style='color:green'>✅正確</span>"; } 
+            else {
+                let showAns = (!["A","B","C","D"].includes(rawCorrect.toUpperCase())) ? `<br><span class="correct-ans">正解:${rawCorrect}</span>` : "";
+                f.innerHTML = `<span style='color:red'>❌錯誤</span>${showAns}`;
             }
         }
     });
 
-    // 跳轉邏輯
     if (firstFilledIndex !== -1) {
         const target = document.getElementById(`row-${firstFilledIndex}`);
         const y = target.getBoundingClientRect().top + window.pageYOffset - 80;
         window.scrollTo({ top: y, behavior: 'smooth' });
-    } else {
-        alert("請先輸入答案再核對喔！");
-    }
+    } else { alert("請先輸入答案喔！"); }
 }
 </script>
 </body>
