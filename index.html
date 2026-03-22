@@ -6,23 +6,162 @@
     <title>我要對答案</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #51A8DD; font-family: 'Noto Sans TC', sans-serif; padding: 10px; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
-        .logo { position: absolute; top: 10px; left: 10px; width: 200px; z-index: 10; }
-        .container { width: 100%; max-width: 480px; margin-top: 40px; display: flex; flex-direction: column; align-items: center; }
-        .top-banner { width: 70%; display: block; margin-bottom: -1px; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); width: 100%; box-sizing: border-box; }
+        body { 
+            background-color: #51A8DD; 
+            font-family: 'Noto Sans TC', sans-serif; 
+            padding: 10px; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+            letter-spacing: 2pt; /* 全域字距 2pt */
+        }
+        
+        /* Logo 位置調整，增加與上方距離 */
+        .logo { position: absolute; top: 15px; left: 15px; width: 160px; z-index: 10; }
+        
+        /* 增加 container 上邊距，確保貓咪不撞到 Logo */
+        .container { 
+            width: 100%; 
+            max-width: 480px; 
+            margin-top: 80px; /* 從 40px 增加到 80px */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            position: relative;
+        }
+        
+        .top-banner { width: 70%; display: block; margin-bottom: 5px; }
+        
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        
         h2 { color: black; text-align: center; margin: 0 0 15px 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .info-box { background: #fff9db; border: 1px solid #f59f00; padding: 12px; border-radius: 8px; font-size: 14px; color: #856404; margin-bottom: 20px; line-height: 1.6; }
-        .q-row { display: flex; align-items: center; margin-bottom: 10px; background: #fdfdfd; padding: 10px; border-radius: 8px; border: 1px solid #eee; gap: 10px; }
-        .q-num { width: 50px; font-weight: bold; color: #1a73e8; font-size: 14px; flex-shrink: 0; }
-        .q-input { flex: 1; min-width: 0; border: 1px solid #ccc; height: 40px; padding: 0 10px; border-radius: 5px; font-size: 18px; text-transform: uppercase; text-align: center; }
+        
+        .info-box { 
+            background: #fff9db; 
+            border: 1px solid #f59f00; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            color: #856404; 
+            margin-bottom: 20px; 
+            line-height: 1.6; 
+        }
+
+        .q-row { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 10px; 
+            background: #fdfdfd; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #eee; 
+            gap: 10px; 
+        }
+        
+        /* 題號改為黑色 */
+        .q-num { width: 50px; font-weight: bold; color: black; font-size: 14px; flex-shrink: 0; }
+        
+        .q-input { 
+            flex: 1; 
+            min-width: 0; 
+            border: 1px solid #ccc; 
+            height: 40px; 
+            padding: 0 10px; 
+            border-radius: 5px; 
+            font-size: 18px; 
+            text-transform: uppercase; 
+            text-align: center;
+            letter-spacing: 0; /* 輸入框內不加寬字距，方便閱讀 */
+        }
+        
         .q-input:focus { border-color: #1a73e8; background: #fff9db; outline: none; }
-        .feedback { min-width: 75px; font-weight: bold; text-align: right; font-size: 13px; flex-shrink: 0; }
-        .correct-ans { color: #d93025; font-size: 12px; display: block; margin-top: 2px; }
-        select { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; background-color: white; }
-        button#check-btn { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-size: 18px; margin-top: 20px; font-weight: bold; }
-        .section-title { color: #d93025; background: #fff1f0; padding: 8px 12px; border-left: 5px solid #d93025; margin: 25px 0 10px 0; font-size: 15px; font-weight: bold; }
-        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 15px; }
+        
+        /* 排除字距 2pt 的區域 */
+        .feedback { 
+            min-width: 75px; 
+            font-weight: bold; 
+            text-align: right; 
+            font-size: 13px; 
+            flex-shrink: 0; 
+            letter-spacing: normal; /* 回復正常字距以免擠壓 */
+        }
+        
+        .correct-ans { color: #d93025; font-size: 12px; display: block; margin-top: 2px; letter-spacing: normal; }
+
+        select { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 5px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            background-color: white;
+            font-family: inherit;
+        }
+
+        /* 原本下方的按鈕 */
+        button#check-btn { 
+            width: 100%; 
+            padding: 15px; 
+            background: #1a73e8; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            margin-top: 20px; 
+            font-weight: bold; 
+            cursor: pointer;
+        }
+
+        /* ✅ 隨畫面移動的快速對獎按鈕 (電腦版在右側，手機版在右下) */
+        .floating-btn {
+            position: fixed;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 100;
+            display: none; /* 初始隱藏，選完章節才顯示 */
+            align-items: center;
+            gap: 5px;
+            font-family: inherit;
+            transition: transform 0.2s;
+        }
+        .floating-btn:active { transform: scale(0.9); }
+
+        /* 電腦版：在內容區塊右側 */
+        @media (min-width: 800px) {
+            .floating-btn {
+                display: none; /* 透過 JS 控制顯示 */
+                left: calc(50% + 250px);
+                bottom: 100px;
+            }
+        }
+
+        /* 手機版：在右下角 */
+        @media (max-width: 799px) {
+            .floating-btn {
+                display: none; /* 透過 JS 控制顯示 */
+                right: 20px;
+                bottom: 30px;
+                padding: 15px 20px;
+                font-size: 14px;
+            }
+        }
+
+        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 15px; padding-bottom: 40px; }
     </style>
 </head>
 <body>
@@ -57,10 +196,13 @@
     </div>
 </div>
 
+<button class="floating-btn" id="quick-check" onclick="checkAll()">
+    直接對了啦🔥
+</button>
+
 <script>
 let currentAnswers = []; 
 
-// 此處保留你的 db 內容...
 const db = {
     "electronics": {
         "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845V；2.025V(大約)", "A", "D", "C", "B", "D", "C", "B"],
@@ -68,7 +210,7 @@ const db = {
         "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)mA", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
         "第三章：雙極性接面電晶體(上)": ["D", "A", "B", "C", "B", "B", "B", "A", "D", "A", "A", "A", "C", "C"],
         "第三章：雙極性接面電晶體(下)": ["D", "C", "A", "D", "B", "B", "C", "B", "B", "D", "C", "B", "A", "A", "B", "C", "A", "B", "D", "D", "B", "B", "A", "B", "D", "A", "B", "C", "A"],
-        "第四章：雙極性接面電晶體放大電路": ["B", "B", "C", "B", "A", "B", "D", "C", "D", "C", "C", "A", "D", "C", "C", "D", "D", "D", "D", "B", "B", "C", "D", "A", "B", "A", "C", "A", "D"]
+        "第四章：雙極性接面電晶體放大電路": ["B", "B", "C", "B", "A", "B", "D", "C", "D", "C", "C", "A", "D", "C", "C", "D", "D", "D", "D", "B", "B", "C", "D", "A", "B", "A", "C", "A", "D"]
     },
     "electric": {
         "第一、二章：電學基本概念、電阻": ["B", "B", "B", "C", "D", "C", "A", "A", "D", "A", "B", "D", "C", "C", "D", "A", "C", "B", "B", "C", "D", "D", "A", "C", "B", "C", "C"],
@@ -96,8 +238,17 @@ function buildQuiz() {
     const s = document.getElementById('sub').value;
     const c = document.getElementById('chap').value;
     const box = document.getElementById('quiz-box');
-    if(!c) { document.getElementById('quiz-area').style.display = "none"; return; }
+    const floatBtn = document.getElementById('quick-check');
+
+    if(!c) { 
+        document.getElementById('quiz-area').style.display = "none"; 
+        floatBtn.style.display = "none";
+        return; 
+    }
+    
     document.getElementById('quiz-area').style.display = "block";
+    floatBtn.style.display = "flex"; // 顯示懸浮按鈕
+    
     box.innerHTML = ""; currentAnswers = []; 
     let qCount = 0;
     const content = db[s][c];
@@ -143,14 +294,11 @@ function checkAll() {
         if (userVal === "") { f.innerText = ""; return; }
         
         let rawCorrect = currentAnswers[i].toUpperCase();
-        
-        // 判斷正確答案是否為選擇題選項 (A, B, C, D 之一)
         const isChoiceQ = ["A", "B", "C", "D"].includes(rawCorrect);
 
         if (userVal === rawCorrect) {
             f.innerHTML = "<span style='color:green'>✅正確</span>";
         } else {
-            // 如果是選擇題，只顯示錯誤；如果是計算題，則顯示正確答案
             let msg = isChoiceQ ? "" : `<br><span class="correct-ans">正解:${currentAnswers[i]}</span>`;
             f.innerHTML = `<span style='color:red'>❌錯誤</span>${msg}`;
         }
