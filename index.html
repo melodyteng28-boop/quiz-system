@@ -126,7 +126,7 @@
             cursor: pointer;
         }
 
-        /* 懸浮按鈕：改用 top 定位配合 JS 修正 */
+        
         .floating-btn {
             position: fixed;
             background: #ffffff;
@@ -185,7 +185,7 @@
             </div>
             
             <div id="quiz-box"></div>
-            <button id="check-btn" onclick="checkAll()">即時核對答案</button>
+            <button id="check-btn" onclick="checkAll()">我準備號對答案了</button>
             <div class="footer">輸入後自動跳下一題</div>
         </div>
     </div>
@@ -265,18 +265,17 @@ function buildQuiz() {
             }
         });
     }
-    // 建立完後立即修正一次位置
+  
     adjustFloatingBtn();
 }
 
-// ✅ 最終修正：使用 VisualViewport 位移而非 CSS Bottom
+
 function adjustFloatingBtn() {
     const btn = document.getElementById('quick-check');
     if (window.visualViewport && btn.style.display !== 'none') {
         const viewport = window.visualViewport;
         
-        // 算出按鈕相對於整個頁面頂端的絕對位置
-        // 讓按鈕固定在可視區域底部向上約 60px 的地方 (避免擋住瀏覽器底部選單)
+    
         const offsetFromBottom = 60;
         const targetY = viewport.offsetTop + viewport.height - offsetFromBottom;
         
@@ -284,7 +283,7 @@ function adjustFloatingBtn() {
     }
 }
 
-// 監聽鍵盤彈出、捲動、調整大小
+
 if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', adjustFloatingBtn);
     window.visualViewport.addEventListener('scroll', adjustFloatingBtn);
