@@ -126,7 +126,6 @@
             cursor: pointer;
         }
 
-        
         .floating-btn {
             position: fixed;
             background: #ffffff;
@@ -142,10 +141,9 @@
             align-items: center;
             font-family: inherit;
             letter-spacing: 0;
-            /* 初始位置 */
             right: 20px;
             top: 0; 
-            will-change: transform; /* 優化效能 */
+            will-change: transform;
         }
 
         @media (min-width: 800px) {
@@ -167,11 +165,18 @@
     <img src="cat.png" alt="貓咪" class="top-banner">
     <div class="card">
         <h2>我要對答案</h2>
+        
+        <select id="course" onchange="initSubjects()">
+            <option value="">-- 選擇課程 --</option>
+            <option value="heima">🐎黑馬複習班</option>
+            <option value="lazy_note">🦥懶人班講義</option>
+            <option value="lazy_book">🦥懶人班題本</option>
+        </select>
+
         <select id="sub" onchange="initChapters()">
             <option value="">-- 選擇科目 --</option>
-            <option value="electronics">⚡電子學</option>
-            <option value="electric">🔋基本電學</option>
         </select>
+
         <select id="chap" onchange="buildQuiz()">
             <option value="">-- 選擇章節 --</option>
         </select>
@@ -196,55 +201,130 @@
 <script>
 let currentAnswers = []; 
 
+// 原始答案包
+const defaultElectronics = {
+    "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845；2.025", "A", "D", "C", "B", "D", "C", "B"],
+    "第二章：二極體及應用電路(上)": ["3.125*10^8", "D", "D", "C", "A", "C", "3.52；-1.156", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7V", "D", "D"],
+    "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
+    "第三章：雙極性接面電晶體(上)": ["D", "A", "B", "C", "B", "B", "B", "A", "D", "A", "A", "A", "C", "C"],
+    "第三章：雙極性接面電晶體(下)": ["D", "C", "A", "D", "B", "B", "C", "B", "B", "D", "C", "B", "A", "A", "B", "C", "A", "B", "D", "D", "B", "B", "A", "B", "D", "A", "B", "C", "A"],
+    "第四章：雙極性接面電晶體放大電路": ["B", "B", "C", "B", "A", "B", "D", "C", "D", "C", "C", "A", "D", "C", "C", "D", "D", "D", "D", "B", "B", "C", "D", "A", "B", "A", "C", "A", "D"],
+    "第五章：雙極性接面電晶體多級放大電路": ["C", "D", "D", "A", "B", "A", "D", "C", "D", "B", "D", "C"],
+    "第六章：雙極性接面電晶體多級放大電路": ["C", "A", "A", "D", "A", "B", "D", "B", "D", "D", "B", "C", "A", "C", "C", "A", "A", "A", "C", "C", "C", "B", "C"],
+    "第七章：金氧半場效電晶體放大電路": ["B", "A", "D", "B", "B", "D", "D", "C", "D", "A", "A", "A", "A", "A", "C", "D", "D"],
+    "第八章：金氧半場效電晶體多級放大電路": ["A", "C", "D", "B", "D", "C", "A", "C", "A", "A", "B", "B", "B", "A"],
+    "第九章：金氧半場效電晶體數位電路": ["C", "C", "C", "A", "C", "B", "C", "B", "B", "C", "C", "A", "C", "D", "A", "B", "A", "C", "D", "D", "B"],
+    "第十章：運算放大器": ["C", "B", "B", "B", "B", "D", "C", "B", "D", "B", "B", "C", "D", "B", "A", "A", "-8", "300", "-8", "D", "C", "C", "C", "B"],
+    "第十一章：運算放大器振盪電路及濾波器": ["C", "B", "A", "B", "B", "B", "A", "C", "B", "A", "C", "C", "C", "C", "C", "B", "B", "B", "C", "A", "B", "A", "A", "A", "D", "B", "D", "D", "A", "B", "D", "C", "B", "B", "A", "B", "D", "D", "C", "C"]
+};
+
+const defaultElectric = {
+    "第一、二章：電學基本概念、電阻": ["B", "B", "B", "C", "D", "C", "A", "A", "D", "A", "B", "D", "C", "C", "D", "A", "C", "B", "B", "C", "D", "D", "A", "C", "B", "C", "C"],
+    "第三章：串並聯電路": [{ section: "(1) 手指短路", answers: ["3", "4", "B", "C", "B", "C", "B"] },{ section: "(2) 串I同；並V同", answers: ["20", "24", "3840", "45", "C", "D"] },{ section: "(3)惠斯登", answers: ["10", "4；2；-1/3", "3", "A", "A", "B"] },{ section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },{ section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },{ section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }],
+    "第四章：直流網路分析": [{ section: "(補充)", answers: ["-1", "8"] },{ section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },{ section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },{ section: "(3) 迴路", answers: ["B", "D", "C"] },{ section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },{ section: "(5) 電源轉換", answers: ["1；2", "4/9", "42", "A", "B", "B"] },{ section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }],
+    "第五章：電容及靜電": ["270 向左","C","D","D","B","B","1.8*10^10","9*10^9","C","1","4","50000","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
+    "第六章：電感及電磁": ["C","B","D","B","D","C","D","B","B","B","A","B","B","B","B","D","B","B","B","A","A","D","D","B","C","D","C","A","D","A","C","A","D","C","C","A","C","C","B","A","C","D","B","C","D","B","B","A","D","C","B","A","D"],
+    "第七章：直流暫態": ["C","B","D","A","B","A","A","A","D","A","C","D","C","D","D","A","D","B","C","A","D","D","B","C","B","A","A","A","C","D","A"],
+    "第九章：基本交流電路": ["A","D","C","D","D","D","C","D","C","A","D","C","D","C","C","C","C","A"],
+    "第十章：交流電功率": ["D","B","B","D","B","D","B","C","D","A","C","C","D","B","B","A","D","C","B","C","B","C","D","C"],
+    "第十一章：諧振電路": ["C","B","C","D","C","D","C","C","D","C","B","B","C","C","C","A","A","B"],
+    "第十二章：交流電源": ["C","D","D","B","A","A","A","D","B","A","D","D","D","A","D","D","A","D","A"]
+};
+    
+const Electric01 = {
+    "EP1+2": ["B", "B", "B", "C", "D", "C", "A", "A", "D", "A", "B", "D", "C", "C", "D", "A", "C", "B", "B", "C", "C", "D", "D", "A", "C", "B", "D", "A"],
+    "EP3": [{ section: "(1) 手指短路", answers: ["3", "4", "B", "C", "B", "C", "B"] },{ section: "(2) 串I同；並V同", answers: ["20", "24", "3840", "45", "C", "D"] },{ section: "(3)惠斯登", answers: ["10", "4；2；-1/3", "3", "A", "A", "B"] },{ section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },{ section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] }],
+    "EP4": [{ section: "(補充)", answers: ["-1", "8"] },{ section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },{ section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },{ section: "(3) 迴路", answers: ["A", "D", "C"] },{ section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },{ section: "(5) 電源轉換", answers: ["1；2", "4/9", "42", "A", "B", "B"] }],
+    "EP5": ["270 向左","C","180","22.5","D","D","1.8*10^10","9*10^9","C","2.5","4","50","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
+    "EP6": ["C","B","D","B","D","C","D","B","B","B","A","B","B","B","B","D","B","B","B","A","A","D","D","C","B","D","C","A","D","A","C","A","D","B","A","C","D","D","C"],
+    "EP7": ["C","B","D","B","A","A","A","B","D","D","A","D","B","D","C","D","D","B","C","B","A","A","A","C","D","A"],
+    "EP9": ["A","D","C","B","D","D","C","D","C","D","D","C","C","C","C","A"],
+    "EP10": ["B","D","B","D","B","C","D","C","D","C","B","B","C"],
+    "EP11": ["C","B","C","A","C","B","C","A","D","B","C","A","B"],
+    "EP12": ["A","A","A","D","B","A","D","A","D","D","A","D","A"]
+};
+    
+const Electrictest = {
+    "EP1+2": ["D", "C", "A", "B", "A", "B", "C", "B", "C", "B", "B", "B", "B", "A", "C", "C", "B", "A", "C", "A", "B", "D", "B", "A", "B", "A", "D", "A", "B", "C", "D", "A", "C", "A", "D", "A", "D", "A", "C", "A", "A", "C", "A", "D", "C", "D", "C", "C", "B", "A", "C", "D", "B", "A", "B", "C", "C", "A", "A", "B", "B", "C", "C", "A", "D", "A", "A", "B", "B", "A", "B", "C", "B", "D", "C", "C", "D", "B", "B", "A", "B", "B", "C"],
+    "EP3": ["A","B","A","8","D","36；36","B","3","4","D","B","B","D","D","A","B","B","C","C","A","C","D","10","D","C","D","C","D","D","D","A","A","A","A","A","B","A","A","B","B","D","C","B","C","D","A","B","D","B","D","A","C","C","C","A","D","B","A","C","C","B","D","B","D","A","C","C","C","C","D","B","A","B","B","D","C","B","D","B","B","A","B","D","C","D","B","A","B","B","C","D","C","A","D","A","A","D","C","B","B","D"],
+    "EP4": ["A","A","A","A","A","A","A","A","A","A","A","A","A","A","A",]
+    
+};
+
+// 課程層級資料庫
 const db = {
-    "electronics": {
-        "第一章：電子元件及波形基本概念": ["B", "C", "C", "B", "B", "C", "D", "D", "C", "0.845；2.025", "A", "D", "C", "B", "D", "C", "B"],
-        "第二章：二極體及應用電路(上)": ["3.125*10^8", "D", "D", "C", "A", "C", "3.52；-1.156", "B", "A", "D", "B", "B", "B", "B", "A", "D", "4.7V", "D", "D"],
-        "第二章：二極體及應用電路(下)": ["10sqrt(2)/9；-20sqrt(2)/9", "5:1", "A", "A", "B", "D", "D", "B", "C", "D", "D", "C", "6sqrt(2)", "D", "D", "12sqrt(2)", "C", "A", "B", "B", "C", "A", "D", "B", "C", "A", "C", "B", "A", "D", "B", "B", "B"],
-        "第三章：雙極性接面電晶體(上)": ["D", "A", "B", "C", "B", "B", "B", "A", "D", "A", "A", "A", "C", "C"],
-        "第三章：雙極性接面電晶體(下)": ["D", "C", "A", "D", "B", "B", "C", "B", "B", "D", "C", "B", "A", "A", "B", "C", "A", "B", "D", "D", "B", "B", "A", "B", "D", "A", "B", "C", "A"],
-        "第四章：雙極性接面電晶體放大電路": ["B", "B", "C", "B", "A", "B", "D", "C", "D", "C", "C", "A", "D", "C", "C", "D", "D", "D", "D", "B", "B", "C", "D", "A", "B", "A", "C", "A", "D"],
-        "第五章：雙極性接面電晶體多級放大電路": ["C", "D", "D", "A", "B", "A", "D", "C", "D", "B", "D", "C"],
-        "第六章：雙極性接面電晶體多級放大電路": ["C", "A", "A", "D", "A", "B", "D", "B", "D", "D", "B", "C", "A", "C", "C", "A", "A", "A", "C", "C", "C", "B", "C"],
-        "第七章：金氧半場效電晶體放大電路": ["B", "A", "D", "B", "B", "D", "D", "C", "D", "A", "A", "A", "A", "A", "C", "D", "D"],
-        "第八章：金氧半場效電晶體多級放大電路": ["A", "C", "D", "B", "D", "C", "A", "C", "A", "A", "B", "B", "B", "A"],
-        "第九章：金氧半場效電晶體數位電路": ["C", "C", "C", "A", "C", "B", "C", "B", "B", "C", "C", "A", "C", "D", "A", "B", "A", "C", "D", "D", "B"],
-        "第十章：運算放大器": ["C", "B", "B", "B", "B", "D", "C", "B", "D", "B", "B", "C", "D", "B", "A", "A", "-8", "300", "-8", "D", "C", "C", "C", "B"],
-        "第十一章：運算放大器振盪電路及濾波器": ["C", "B", "A", "B", "B", "B", "A", "C", "B", "A", "C", "C", "C", "C", "C", "B", "B", "B", "C", "A", "B", "A", "A", "A", "D", "B", "D", "D", "A", "B", "D", "C", "B", "B", "A", "B", "D", "D", "C", "C"]
+    "heima": {
+        "name": "🐎 黑馬複習班",
+        "electronics": defaultElectronics,
+        "electric": defaultElectric
     },
-    "electric": {
-        "第一、二章：電學基本概念、電阻": ["B", "B", "B", "C", "D", "C", "A", "A", "D", "A", "B", "D", "C", "C", "D", "A", "C", "B", "B", "C", "D", "D", "A", "C", "B", "C", "C"],
-        "第三章：串並聯電路": [{ section: "(1) 手指短路", answers: ["3", "4", "B", "C", "B", "C", "B"] },{ section: "(2) 串I同；並V同", answers: ["20", "24", "3840", "45", "C", "D"] },{ section: "(3)惠斯登", answers: ["10", "4；2；-1/3", "3", "A", "A", "B"] },{ section: "(4) 壓升壓降", answers: [ "C", "B", "C", "C"] },{ section: "(5) 無限電阻", answers: [ "(1+sqrt(3))R", "B"] },{ section: "(6) 練習", answers: [ "C", "D", "B", "A", "B", "B", "D", "C", "C", "D", "D", "B", "C", "B"] }],
-        "第四章：直流網路分析": [{ section: "(補充)", answers: ["-1", "8"] },{ section: "(1) 重疊", answers: ["D", "A", "6", "A", "C", "B"] },{ section: "(2) 節點", answers: ["C", "D", "B", "-3/7", "D", "C"] },{ section: "(3) 迴路", answers: ["B", "D", "C"] },{ section: "(4) 戴維寧", answers: ["C", "B", "B", "A", "A", "B"] },{ section: "(5) 電源轉換", answers: ["1；2", "4/9", "42", "A", "B", "B"] },{ section: "綜合練習", answers: ["-12", "-27", "41/3", "8/3", "-9.6", "8/3", "9", "42.5", "50", "1/3", "A", "B", "1.5", "B", "A", "A", "D", "C", "D", "D", "B"] }],
-        "第五章：電容及靜電": ["270 向左","C","D","D","B","B","1.8*10^10","9*10^9","C","1","4","50000","A","C","D","D","C","D","A","C","C","C","B","A","B","B","30；200","150；50","150","600"],
-        "第六章：電感及電磁": ["C","B","D","B","D","C","D","B","B","B","A","B","B","B","B","D","B","B","B","A","A","D","D","B","C","D","C","A","D","A","C","A","D","C","C","A","C","C","B","A","C","D","B","C","D","B","B","A","D","C","B","A","D"],
-        "第七章：直流暫態": ["C","B","D","A","B","A","A","A","D","A","C","D","C","D","D","A","D","B","C","A","D","D","B","C","B","A","A","A","C","D","A"],
-        "第九章：基本交流電路": ["A","D","C","D","D","D","C","D","C","A","D","C","D","C","C","C","C","A"],
-        "第十章：交流電功率": ["D","B","B","D","B","D","B","C","D","A","C","C","D","B","B","A","D","C","B","C","B","C","D","C"],
-        "第十一章：諧振電路": ["C","B","C","D","C","D","C","C","D","C","B","B","C","C","C","A","A","B"],
-        "第十二章：交流電源": ["C","D","D","B","A","A","A","D","B","A","D","D","D","A","D","D","A","D","A"]
+    "lazy_note": {
+        "name": "🦥 懶人班講義",
+        "electronics": defaultElectronics,
+        "electric": defaultElectric
+    },
+    "lazy_book": {
+        "name": "🦥 懶人班題本",
+        "electronics": defaultElectronics,
+        "electric": defaultElectric
     }
 };
 
+// 初始化科目選單
+function initSubjects() {
+    const courseKey = document.getElementById('course').value;
+    const sub = document.getElementById('sub');
+    const chap = document.getElementById('chap');
+    
+    // 清空後續選單
+    sub.innerHTML = '<option value="">-- 選擇科目 --</option>';
+    chap.innerHTML = '<option value="">-- 選擇章節 --</option>';
+    document.getElementById('quiz-area').style.display = "none";
+    document.getElementById('quick-check').style.display = "none";
+
+    if(courseKey && db[courseKey]) {
+        const subData = [
+            {val: "electronics", text: "⚡電子學"},
+            {val: "electric", text: "🔋基本電學"}
+        ];
+        subData.forEach(item => {
+            let opt = document.createElement('option');
+            opt.value = item.val;
+            opt.innerText = item.text;
+            sub.appendChild(opt);
+        });
+    }
+}
+
+// 初始化章節選單
 function initChapters() {
-    const s = document.getElementById('sub').value;
-    const c = document.getElementById('chap');
-    c.innerHTML = '<option value="">-- 選擇章節 --</option>';
-    if(s && db[s]) {
-        Object.keys(db[s]).forEach(name => {
-            let opt = document.createElement('option'); opt.value = name; opt.innerText = name;
-            c.appendChild(opt);
+    const courseKey = document.getElementById('course').value;
+    const subKey = document.getElementById('sub').value;
+    const chap = document.getElementById('chap');
+    
+    chap.innerHTML = '<option value="">-- 選擇章節 --</option>';
+    document.getElementById('quiz-area').style.display = "none";
+    document.getElementById('quick-check').style.display = "none";
+
+    if(courseKey && subKey && db[courseKey][subKey]) {
+        const chapters = db[courseKey][subKey];
+        Object.keys(chapters).forEach(name => {
+            let opt = document.createElement('option');
+            opt.value = name;
+            opt.innerText = name;
+            chap.appendChild(opt);
         });
     }
 }
 
 function buildQuiz() {
-    const s = document.getElementById('sub').value;
-    const c = document.getElementById('chap').value;
+    const courseKey = document.getElementById('course').value;
+    const subKey = document.getElementById('sub').value;
+    const chapName = document.getElementById('chap').value;
     const box = document.getElementById('quiz-box');
     const floatBtn = document.getElementById('quick-check');
 
-    if(!c) { 
+    if(!chapName) { 
         document.getElementById('quiz-area').style.display = "none"; 
         floatBtn.style.display = "none";
         return; 
@@ -255,7 +335,7 @@ function buildQuiz() {
     
     box.innerHTML = ""; currentAnswers = []; 
     let qCount = 0;
-    const content = db[s][c];
+    const content = db[courseKey][subKey][chapName];
 
     const addRow = (ans) => {
         let idx = qCount++; currentAnswers.push(ans);
@@ -280,20 +360,16 @@ function buildQuiz() {
     adjustFloatingBtn();
 }
 
-
+// 剩餘的功能與原本一致
 function adjustFloatingBtn() {
     const btn = document.getElementById('quick-check');
     if (window.visualViewport && btn.style.display !== 'none') {
         const viewport = window.visualViewport;
-        
-    
         const offsetFromBottom = 60;
         const targetY = viewport.offsetTop + viewport.height - offsetFromBottom;
-        
         btn.style.transform = `translateY(${targetY}px)`;
     }
 }
-
 
 if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', adjustFloatingBtn);
